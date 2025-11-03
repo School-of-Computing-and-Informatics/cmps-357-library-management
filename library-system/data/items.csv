@@ -1,0 +1,6 @@
+item_id,title,type,author,isbn,publication_year,status,location
+201,The Great Gatsby,Book,F. Scott Fitzgerald,978-0743273565,1925,available,A-shelf-12
+202,To Kill a Mockingbird,Book,Harper Lee,978-0061120084,1960,checked_out,B-shelf-05
+203,1984,Book,George Orwell,978-0451524935,1949,available,A-shelf-23
+204,The Matrix,DVD,Wachowski Brothers,N/A,1999,available,DVD-rack-03
+205,Laptop - Dell XPS,Device,Dell,N/A,2022,checked_out,Tech-station-01

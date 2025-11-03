@@ -1,0 +1,6 @@
+room_id,room_name,capacity,floor,features,availability
+R101,Community Room A,30,1,Projector;Whiteboard;WiFi,available
+R102,Meeting Room B,15,1,WiFi;TV,available
+R103,Computer Lab,25,2,Computers;Printer;WiFi,available
+R104,Study Room 1,8,2,Whiteboard;WiFi,available
+R105,Conference Hall,100,3,Stage;Sound System;Projector;WiFi,available

@@ -1,0 +1,6 @@
+event_id,event_name,event_date,start_time,end_time,room_id,organizer,expected_attendance,status
+301,Story Time for Kids,2024-01-15,10:00,11:00,R101,Children's Dept,25,confirmed
+302,Book Club Discussion,2024-01-18,14:00,16:00,R102,Community Programs,15,confirmed
+303,Tech Workshop,2024-01-20,13:00,15:00,R103,Tech Services,30,confirmed
+304,Author Meet & Greet,2024-01-22,17:00,19:00,R102,Events Coordinator,50,pending
+305,Writing Workshop,2024-01-25,11:00,13:00,R101,Community Programs,20,confirmed
