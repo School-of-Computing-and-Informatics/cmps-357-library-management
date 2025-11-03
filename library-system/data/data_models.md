@@ -49,6 +49,7 @@ Represents library resources available for checkout.
 | author | String | Author or creator of the item | Data Model | No |
 | isbn | String | ISBN number (for books) | Data Model | No |
 | publication_year | Integer | Year of publication/release | Data Model | No |
+| value | Decimal | Replacement value/cost of the item in dollars | Policy Definitions (Fine/Fee Structure) | Yes |
 | status | Enum | Current status (available, checked_out, lost) | Data Model | Yes |
 | location | String | Physical location in library | Data Model | Yes |
 
@@ -59,6 +60,9 @@ Represents library resources available for checkout.
 - Checkout periods by type: Books (21 days), DVDs (7 days), Devices (14 days)
 - Lost item policy: items > 30 days overdue
 - Replacement costs and processing fees
+
+### Notes
+- The `value` field is required for calculating damaged item fines (percentage of item value) and lost item replacement costs as specified in the Fine/Fee Structure policy
 
 ## 3. Checkout/Transaction Entity
 
@@ -196,6 +200,7 @@ Represents fines and fees assessed to members. This model was created to documen
 - This entity was created to formalize the fee structure documented in Policy Definitions
 - Supports both simple and expanded fee structures
 - Includes damage assessment levels and revocation conditions
+- **Dependency**: Damaged item fines (Levels 1-4) and lost item replacement costs require the `value` field from the Item entity to calculate the fee amount
 
 ## 7. Membership Type Reference
 
