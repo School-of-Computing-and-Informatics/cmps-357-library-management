@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1700" viewBox="0 0 1200 1700">
+  <rect x="0" y="0" width="1200" height="1700" fill="#f7f7fb"/>
+  <g>
+    <text x="600.0" y="28" font-family="Inter,Arial,Helvetica,sans-serif" font-size="22" text-anchor="middle" fill="#111">Reserve Room — Workflow</text>
+  </g>
+  
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+    <polygon points="0 0, 10 3.5, 0 7" fill="#222"/>
+  </marker>
+</defs>
+
+  <g>
+    <rect id="A" x="450" y="40" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="75.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Start</text>
+<rect id="B" x="450" y="170" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="205.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">User submits Room Reservation Request</text>
+<rect id="C" x="450" y="300" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="335.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Validate user membership</text>
+<rect id="D" x="80" y="430" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="230.0" y="453.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Reject request — notify user</text>
+<text x="230.0" y="477.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">(Inactive membership)</text>
+<rect id="E" x="450" y="430" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="465.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Check room availability</text>
+<rect id="F" x="820" y="590" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="970.0" y="613.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Reject request — suggest alternate slot</text>
+<text x="970.0" y="637.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">(Conflict)</text>
+<rect id="G" x="450" y="560" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="595.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Verify room capacity and event type</text>
+<rect id="H" x="80" y="690" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="230.0" y="725.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Reject request — capacity/type mismatch</text>
+<rect id="I" x="450" y="690" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="725.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Create reservation record</text>
+<rect id="J" x="450" y="820" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="855.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Confirm booking to user</text>
+<rect id="K" x="450" y="950" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="985.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Send staff approval notification</text>
+<rect id="L" x="450" y="1080" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="1115.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Await approval decision</text>
+<rect id="M" x="80" y="1210" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="230.0" y="1233.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Cancel reservation — notify user</text>
+<text x="230.0" y="1257.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">(Rejected)</text>
+<rect id="N" x="450" y="1210" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="1245.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Mark as Confirmed</text>
+<rect id="O" x="450" y="1340" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="1375.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">Generate confirmation slip</text>
+<rect id="P" x="450" y="1470" width="300" height="70" rx="12" ry="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+<text x="600.0" y="1505.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="16" text-anchor="middle" fill="#111">End</text>
+<path d="M 600.0 110 L 600.0 170" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M 600.0 240 L 600.0 300" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M 600.0 370 L 600.0 430" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="600.0" y="392.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Active</text>
+<path d="M 600.0 500 L 600.0 560" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="600.0" y="522.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Available</text>
+<path d="M 600.0 630 L 600.0 690" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="600.0" y="652.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Valid</text>
+<path d="M 600.0 760 L 600.0 820" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M 600.0 890 L 600.0 950" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M 600.0 1020 L 600.0 1080" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M 600.0 1150 L 600.0 1210" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="600.0" y="1172.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Approved</text>
+<path d="M 600.0 1280 L 600.0 1340" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M 600.0 1410 L 600.0 1470" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M 600.0 370 L 600.0 400.0 L 230.0 400.0 L 230.0 430" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="295.0" y="392.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Inactive</text>
+<path d="M 600.0 500 L 600.0 530.0 L 970.0 530.0 L 970.0 590" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="905.0" y="522.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Conflict</text>
+<path d="M 600.0 630 L 600.0 660.0 L 230.0 660.0 L 230.0 690" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="295.0" y="652.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Invalid</text>
+<path d="M 600.0 1150 L 600.0 1180.0 L 230.0 1180.0 L 230.0 1210" stroke="#222" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="285.0" y="1172.0" font-family="Inter,Arial,Helvetica,sans-serif" font-size="14" text-anchor="middle" fill="#444">Rejected</text>
+  </g>
+</svg>
