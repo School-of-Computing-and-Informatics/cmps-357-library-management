@@ -49,29 +49,76 @@ Each rule yields binary outcomes (pass/fail), making this ideal for structured t
 
 ## Directory Structure
 ```
-/library-system/
-├─ data/ 
-    │   
-    ├─ members.csv 
-    │   
-    ├─ items.csv 
-    │   
-    ├─ events.csv 
-    │   
-    └─ rooms.csv 
-├─ rules/ 
-    │   
-    └─ policy_definitions.md 
-├─ scripts/ 
-    │   
-    ├─ simulate_day.py 
-    │  
-    └─ generate_reports.py 
-├─ tests/ 
-    │   
-    └─ test_cases.xlsx 
-└─ reports/
+./
+├─ docs/                          # Comprehensive documentation
+│   ├─ 01_specification.md        # System requirements and specifications
+│   ├─ 02_design.md               # Architecture and design decisions
+│   ├─ 03_implementation_plan.md  # Development phases and progress
+│   ├─ 04_testing_plan.md         # Testing strategy and test cases
+│   ├─ 05_workflow_stages.md      # Detailed process workflows
+│   ├─ 06_evaluation.md           # Assessment criteria and metrics
+│   └─ CHANGELOG.md               # Version history and changes
+│
+├─ library-system/
+│   ├─ data/                      # CSV data files
+│   │   ├─ members.csv            # Member records
+│   │   ├─ items.csv              # Resource catalog
+│   │   ├─ events.csv             # Scheduled events
+│   │   └─ rooms.csv              # Room inventory
+│   │
+│   ├─ rules/                     # Policy documentation
+│   │   └─ policy_definitions.md  # Business rules and policies
+│   │
+│   ├─ scripts/                   # Operational scripts
+│   │   ├─ simulate_day.py        # Daily transaction simulation
+│   │   └─ generate_reports.py    # Report generation
+│   │
+│   ├─ tests/                     # Test resources
+│   │   └─ test_cases.xlsx        # Test case definitions
+│   │
+│   └─ reports/                   # Generated reports (git-ignored)
+│
+└─ README.md                      # This file
 ```
+
+---
+
+## Documentation
+
+Comprehensive documentation is available in the `/docs` directory:
+
+1. **[Specification](docs/01_specification.md)** - Complete system requirements, functional and non-functional requirements, data model, and business rules
+2. **[Design](docs/02_design.md)** - System architecture, design patterns, algorithms, and technical decisions
+3. **[Implementation Plan](docs/03_implementation_plan.md)** - Development phases, current status, and roadmap
+4. **[Testing Plan](docs/04_testing_plan.md)** - Testing strategy, test cases, and validation methods
+5. **[Workflow Stages](docs/05_workflow_stages.md)** - Detailed process flows for all major operations
+6. **[Evaluation](docs/06_evaluation.md)** - Assessment criteria, metrics, and success indicators
+7. **[CHANGELOG](docs/CHANGELOG.md)** - Version history and release notes
+
+---
+
+## Quick Start
+
+### Running Simulations
+
+```bash
+# Navigate to the scripts directory
+cd library-system/scripts
+
+# Run daily simulation
+python3 simulate_day.py
+
+# Generate reports
+python3 generate_reports.py
+```
+
+### Viewing Data
+
+All data is stored in human-readable CSV format in `library-system/data/`:
+- `members.csv` - Library members
+- `items.csv` - Books, DVDs, and devices
+- `events.csv` - Scheduled programs
+- `rooms.csv` - Available spaces
 
 ---
 
