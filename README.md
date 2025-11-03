@@ -64,7 +64,15 @@ Each rule yields binary outcomes (pass/fail), making this ideal for structured t
 │   │   ├─ members.csv            # Member records
 │   │   ├─ items.csv              # Resource catalog
 │   │   ├─ events.csv             # Scheduled events
-│   │   └─ rooms.csv              # Room inventory
+│   │   ├─ rooms.csv              # Room inventory
+│   │   ├─ transactions.csv       # Checkout/return transactions
+│   │   ├─ fines.csv              # Fine and fee records
+│   │   └─ data_models.md         # Data entity documentation
+│   │
+│   ├─ forms/                     # Form templates
+│   │   ├─ membership_application.md  # Membership application form
+│   │   ├─ checkout_slip.md       # Checkout transaction form
+│   │   └─ event_request.md       # Event scheduling form
 │   │
 │   ├─ rules/                     # Policy documentation
 │   │   └─ policy_definitions.md  # Business rules and policies
@@ -75,6 +83,10 @@ Each rule yields binary outcomes (pass/fail), making this ideal for structured t
 │   │
 │   ├─ tests/                     # Test resources
 │   │   └─ test_cases.xlsx        # Test case definitions
+│   │
+│   ├─ workflow/                  # Process diagrams
+│   │   ├─ reserve_room.mmd       # Room reservation workflow
+│   │   └─ reserve_room.svg       # Room reservation diagram
 │   │
 │   └─ reports/                   # Generated reports (git-ignored)
 │
