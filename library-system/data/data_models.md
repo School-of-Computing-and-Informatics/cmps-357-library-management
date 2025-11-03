@@ -15,7 +15,7 @@ Represents library members and their membership information.
 | address | String | Physical address of the member | Membership Application Form | Yes |
 | phone | String | Contact phone number | Membership Application Form | Yes |
 | email | String | Email address | Membership Application Form | Yes |
-| membership_type | Enum | Type of membership (Standard, Premium, Student) | Membership Application Form, Policy Definitions | Yes |
+| membership_type | Enum | Type of membership (Standard, Premium, Student, Adult, Child) | Membership Application Form, Policy Definitions | Yes |
 | join_date | Date | Date when membership started | Membership Application Form (Start Date) | Yes |
 | expiry_date | Date | Date when membership expires | Membership Application Form | Yes |
 | status | Enum | Current membership status (active, inactive, suspended) | Policy Definitions | Yes |
@@ -25,13 +25,15 @@ Represents library members and their membership information.
 - Checkout Slip (Member ID, Member Name)
 
 ### Related Policies
-- Membership Types: Standard ($25/year, 5 items), Premium ($50/year, 10 items), Student ($15/year, 5 items)
+- Membership Types from Policy Definitions: Standard ($25/year, 5 items), Premium ($50/year, 10 items), Student ($15/year, 5 items)
+- Membership Types from Application Form: Adult, Student, Child
 - Status transitions: expired → inactive, outstanding fines > $10 → restricted checkout
 - Membership suspension rules
 
 ### Notes
 - The `address` field was added based on the Membership Application Form requirement
 - Staff Signature from forms is tracked separately in transaction/approval records
+- **Membership Type Clarification**: There is an inconsistency between the Policy Definitions (Standard, Premium, Student) and the Membership Application Form (Adult, Student, Child). The system should support both naming conventions or clarify the mapping (e.g., Standard may equate to Adult).
 
 ## 2. Item Entity
 
@@ -197,15 +199,36 @@ Represents fines and fees assessed to members. This model was created to documen
 
 ## 7. Membership Type Reference
 
-This reference model documents the membership types and their associated rules from Policy Definitions.
+This reference model documents the membership types and their associated rules from both Policy Definitions and Membership Application Form.
 
-### Membership Types
+### Membership Types from Policy Definitions
 
 | Type | Annual Fee | Item Limit | Special Benefits | Policy Source |
 |------|-----------|------------|------------------|---------------|
 | Standard | $25 | 5 items | None | Policy Definitions |
 | Premium | $50 | 10 items | Priority event registration | Policy Definitions |
 | Student | $15 | 5 items | Requires valid student ID | Policy Definitions |
+
+### Membership Types from Application Form
+
+The Membership Application Form lists the following types:
+- **Adult**: Not explicitly defined in Policy Definitions (may correspond to Standard or Premium)
+- **Student**: Corresponds to Student type in Policy Definitions
+- **Child**: Not explicitly defined in Policy Definitions
+
+### Membership Type Reconciliation Notes
+
+**Inconsistency Identified**: The Policy Definitions document uses "Standard" and "Premium" categories, while the Membership Application Form uses "Adult", "Student", and "Child" categories. This inconsistency should be resolved by:
+
+1. Clarifying whether "Adult" refers to both "Standard" and "Premium" memberships, or
+2. Defining a "Child" membership type in the policy definitions with associated fees and limits, or
+3. Updating the Membership Application Form to use the terminology from Policy Definitions
+
+**Recommended Resolution**: The system should support all mentioned types. Proposed mapping:
+- Adult → Standard (default adult membership)
+- Adult + Premium benefits → Premium
+- Student → Student
+- Child → New type to be defined (suggested: $10/year, 3 items limit, parental consent required)
 
 ### Membership Rules
 - Renewals extend membership by 12 months from expiry date
