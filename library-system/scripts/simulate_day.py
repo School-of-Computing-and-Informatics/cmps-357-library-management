@@ -36,7 +36,17 @@ def simulate_checkout(members, items):
             item = random.choice(available_items)
             
             checkout_date = datetime.now()
-            due_date = checkout_date + timedelta(days=14)
+            # Set checkout period based on item type (per policy)
+            item_type = item['type']
+            if item_type == 'Book':
+                checkout_days = 21
+            elif item_type == 'DVD':
+                checkout_days = 7
+            elif item_type == 'Device':
+                checkout_days = 14
+            else:
+                checkout_days = 14  # Default
+            due_date = checkout_date + timedelta(days=checkout_days)
             
             checkouts.append({
                 'member_id': member['member_id'],
