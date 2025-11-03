@@ -1,0 +1,13 @@
+flowchart TD
+    A[Start] --> B[User presents library item and membership ID]
+    B --> C[Validate membership status]
+    C -->|Inactive| D[Reject checkout — membership expired or suspended]
+    C -->|Active| E[Verify item availability]
+    E -->|Unavailable| F[Reject checkout — item already checked out]
+    E -->|Available| G[Check user's current item count]
+    G -->|Limit reached| H[Reject checkout — borrowing limit exceeded]
+    G -->|Within limit| I[Record checkout in system]
+    I --> J[Assign due date and print checkout slip]
+    J --> K[Update item status to 'Checked Out']
+    K --> L[Confirm checkout to user]
+    L --> M[End]
