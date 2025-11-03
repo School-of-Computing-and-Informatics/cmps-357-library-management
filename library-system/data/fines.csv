@@ -1,0 +1,6 @@
+fine_id,member_id,violation_type,amount,assessment_date,paid_date,item_id,status,description
+2001,103,Overdue,2.50,2023-06-20,2023-06-25,202,paid,10 days overdue
+2002,101,Late Event Cancellation,25.00,2023-12-15,,,,outstanding,Canceled book club within 24 hours
+2003,105,Overdue,0.75,2024-01-18,,,205,outstanding,3 days overdue on device
+2004,103,Lost Item,35.00,2023-07-15,,,210,outstanding,Book lost after 30 days overdue
+2005,102,Membership Replacement Card,5.00,2023-11-20,2023-11-20,,,paid,Lost membership card

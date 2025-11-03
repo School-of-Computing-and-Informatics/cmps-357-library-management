@@ -1,0 +1,6 @@
+transaction_id,member_id,member_name,item_id,title,checkout_date,due_date,return_date,staff_initials
+1001,101,John Smith,202,To Kill a Mockingbird,2024-01-10,2024-01-31,,AS
+1002,105,David Wilson,205,Laptop - Dell XPS,2024-01-12,2024-01-26,,JM
+1003,102,Emily Johnson,204,The Matrix,2024-01-14,2024-01-21,,AS
+1004,104,Sarah Davis,201,The Great Gatsby,2024-01-08,2024-01-29,2024-01-20,JM
+1005,101,John Smith,203,1984,2024-01-15,2024-02-05,,AS
