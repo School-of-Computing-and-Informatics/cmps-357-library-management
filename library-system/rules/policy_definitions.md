@@ -20,6 +20,14 @@
 - Members cannot exceed their item limit based on membership type
 - Checkout period: 21 days for books, 7 days for DVDs, 14 days for devices
 
+| Media Type | Days |
+|------------|------|
+| Books      | 21   |
+| DVDs       | 7    |
+| Devices    | 14   |
+
+
+
 ### Return Policies
 - Overdue fine: $0.25 per day per item
 - Maximum fine per item: $10.00
