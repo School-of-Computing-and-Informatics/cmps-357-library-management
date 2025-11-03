@@ -56,6 +56,8 @@
 
 ## Fine and Fee Structure
 
+### Simplified Feed Structure 
+
 | Violation Type | Fee |
 |----------------|-----|
 | Overdue (per day per item) | $0.25 |
@@ -63,6 +65,22 @@
 | Damaged Item | Assessment varies |
 | Late Event Cancellation | $25 |
 | Membership Replacement Card | $5 |
+
+### Expanded Fee Structure
+
+| Violation Type | Fee / Action | Revocation Condition |
+|----------------|--------------|----------------------|
+| **Overdue (per day per item)** | $0.25 | Membership temporarily suspended after 30 consecutive overdue days or 5 unresolved overdues |
+| **Lost Item** | Replacement cost + $5 processing fee | Membership revoked after 3 lost items in a 12-month period |
+| **Damaged Item – Level 1 (Minor scuffing / labeling wear)** | 5% of item value | None |
+| **Damaged Item – Level 2 (Torn pages / small case cracks)** | 15% of item value | None |
+| **Damaged Item – Level 3 (Water damage / missing pages / warped media)** | 40% of item value | Membership suspended until fee paid |
+| **Damaged Item – Level 4 (Irreparable or unsafe condition)** | 75–100% of item value + $5 processing fee | Membership revoked after 2 such incidents |
+| **Late Event Cancellation (within 24 hours)** | $25 flat fee | Event privileges suspended after 3 late cancellations per semester |
+| **Membership Replacement Card** | $5 | None |
+| **Unauthorized Room or Equipment Use** | $50 | Immediate suspension pending staff review |
+| **Repeated Policy Violations (any combination)** | – | Revocation at discretion of library management committee |
+
 
 ## Operating Hours
 
