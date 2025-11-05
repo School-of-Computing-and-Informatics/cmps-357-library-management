@@ -16,6 +16,14 @@ This directory contains operational Python scripts for running library simulatio
 - **test_validation.py** - Unit test suite with 15 tests for all validation functions
 - **demo_validation.py** - Interactive demonstration of validation features
 
+### Phase 6: Transaction Management (In Progress)
+- **transaction_management.py** - Transaction management module implementing:
+  - `add_member()` - Add new library members with validation
+  - `renew_membership()` - Extend membership expiry dates by 12 months
+  - Helper functions for CSV operations and member ID generation
+- **test_transaction_management.py** - Unit test suite with 11 tests for transaction functions
+- **demo_transaction_management.py** - Interactive demonstration of transaction management features
+
 ## Usage
 
 ```bash
@@ -30,6 +38,12 @@ python3 test_validation.py
 
 # View validation demonstration
 python3 demo_validation.py
+
+# Run transaction management tests
+python3 test_transaction_management.py
+
+# View transaction management demonstration
+python3 demo_transaction_management.py
 ```
 
 ## Phase 5 Validation Features
@@ -45,11 +59,34 @@ python3 demo_validation.py
 - **Advance Notice**: Requires minimum 3-day advance booking
 - **Operating Hours**: Enforces library hours (Mon-Thu: 9AM-8PM, Fri-Sat: 9AM-6PM, Sun: 1PM-5PM)
 
+## Phase 6 Transaction Management Features
+
+### Member Management
+- **add_member()**: Add new library members
+  - Validates all required fields (name, address, email, phone, membership_type)
+  - Generates unique member IDs automatically
+  - Sets membership expiry to 12 months from join date
+  - Initializes status as 'active'
+  - Supports all membership types: Standard, Premium, Student, Adult, Child
+
+- **renew_membership()**: Renew existing memberships
+  - Extends expiry date by 12 months from current expiry date (per policy)
+  - Updates status from 'expired' to 'active' if needed
+  - Validates member existence
+
 ## Testing
 
-All validation functions have comprehensive unit tests:
+All validation and transaction management functions have comprehensive unit tests:
+
+### Phase 5 Validation
 - 15 test cases covering normal, edge, and failure scenarios
 - 100% pass rate
 - Run with: `python3 test_validation.py`
+
+### Phase 6 Transaction Management
+- 11 test cases covering add_member() and renew_membership()
+- Tests include validation, error handling, and edge cases
+- 100% pass rate
+- Run with: `python3 test_transaction_management.py`
 
 These scripts operate on the data files in the `../data` directory and can be used for testing, validation, and demonstration purposes.
