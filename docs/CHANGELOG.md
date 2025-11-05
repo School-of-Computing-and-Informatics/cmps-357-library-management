@@ -19,10 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command-line interface for interactive operations
 - Performance benchmarking with large datasets
 
-## [0.2.0] - 2024-01-15
+## [0.2.0] - 2025-11-05
 
 ### Added
-- Comprehensive documentation suite in `/docs` directory
   - `01_specification.md` - Complete system requirements and specifications
   - `02_design.md` - Detailed architecture and design decisions
   - `03_implementation_plan.md` - Phased development plan with current status
@@ -30,14 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `05_workflow_stages.md` - Detailed workflow documentation
   - `06_evaluation.md` - Evaluation criteria and assessment framework
   - `CHANGELOG.md` - This file
-- Updated README with enhanced system overview
-- Documentation references in project structure
+  - `library-system/workflow/`:
+    - `reserve_room.mmd`, `check-out-item.mmd`, `README.md`
+  - `library-system/data/data_models.md`
+  - `library-system/data/transactions.csv`, `library-system/data/fines.csv`
+  - `VERSION.md` added retroactively (current: `0.2.0`)
 
-### Changed
-- README.md structure enhanced with better organization
 - Project documentation now centralized in `/docs`
 
-## [0.1.0] - 2024-01-10
+## [0.1.0] - 2025-11-03
 
 ### Added
 - Initial project structure
@@ -142,8 +142,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Version | Date | Key Features | Status |
 |---------|------|--------------|--------|
 | 0.0.1 | 2024-01-01 | Repository setup | Released |
-| 0.1.0 | 2024-01-10 | Core system, data model, scripts | Released |
-| 0.2.0 | 2024-01-15 | Complete documentation suite | Released |
+| 0.1.0 | 2025-11-03 | Core system, data model, scripts | Released |
+| 0.2.0 | 2025-11-05 | Complete documentation suite | Released |
 | 0.3.0 | TBD | Testing framework | Planned |
 | 0.4.0 | TBD | Enhanced validation | Planned |
 | 0.5.0 | TBD | CLI interface | Planned |

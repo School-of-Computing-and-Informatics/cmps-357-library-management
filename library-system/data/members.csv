@@ -1,6 +1,6 @@
-member_id,name,email,phone,membership_type,join_date,expiry_date,status
-101,John Smith,john.smith@email.com,555-0101,Standard,2023-01-15,2024-01-15,active
-102,Emily Johnson,emily.j@email.com,555-0102,Premium,2023-03-20,2024-03-20,active
-103,Michael Brown,m.brown@email.com,555-0103,Standard,2022-06-10,2023-06-10,expired
-104,Sarah Davis,sarah.davis@email.com,555-0104,Premium,2023-08-05,2024-08-05,active
-105,David Wilson,d.wilson@email.com,555-0105,Student,2023-09-01,2024-09-01,active
+member_id,name,address,email,phone,membership_type,join_date,expiry_date,status
+101,John Smith,123 Main St,john.smith@email.com,555-0101,Standard,2023-01-15,2024-01-15,active
+102,Emily Johnson,456 Oak Ave,emily.j@email.com,555-0102,Premium,2023-03-20,2024-03-20,active
+103,Michael Brown,789 Pine Rd,m.brown@email.com,555-0103,Standard,2022-06-10,2023-06-10,expired
+104,Sarah Davis,321 Elm St,sarah.davis@email.com,555-0104,Premium,2023-08-05,2024-08-05,active
+105,David Wilson,654 Maple Dr,d.wilson@email.com,555-0105,Student,2023-09-01,2024-09-01,active
