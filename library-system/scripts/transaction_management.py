@@ -8,7 +8,7 @@ This module provides CRUD operations for library entities:
 """
 
 import csv
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -187,6 +187,7 @@ def renew_membership(
     
     # Find member by ID
     member_found = False
+    new_expiry_date = None
     for member in members:
         if int(member['member_id']) == member_id:
             member_found = True
@@ -199,7 +200,8 @@ def renew_membership(
             
             # Extend by 12 months from current expiry date
             new_expiry_date_obj = expiry_date_obj + relativedelta(months=12)
-            member['expiry_date'] = new_expiry_date_obj.strftime('%Y-%m-%d')
+            new_expiry_date = new_expiry_date_obj.strftime('%Y-%m-%d')
+            member['expiry_date'] = new_expiry_date
             
             # Update status to active if it was expired
             if member['status'] == 'expired':
@@ -215,4 +217,4 @@ def renew_membership(
                   'membership_type', 'join_date', 'expiry_date', 'status']
     write_csv_data(members_file, members, fieldnames)
     
-    return True, f"Membership renewed successfully for member ID: {member_id}. New expiry date: {member['expiry_date']}"
+    return True, f"Membership renewed successfully for member ID: {member_id}. New expiry date: {new_expiry_date}"

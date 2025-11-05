@@ -13,7 +13,7 @@ Tests the add_member() and renew_membership() functions including:
 import sys
 import shutil
 import tempfile
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
 
