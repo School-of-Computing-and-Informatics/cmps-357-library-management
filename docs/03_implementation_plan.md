@@ -120,6 +120,8 @@ This document outlines the phased approach to implementing the Library Event and
 | Policy Rules | ✅ Complete | /library-system/rules/ | Business rule documentation |
 | Simulation | ✅ Complete | /library-system/scripts/simulate_day.py | Day simulation |
 | Reporting | ✅ Complete | /library-system/scripts/generate_reports.py | Report generation |
+| Validation | ✅ Complete | /library-system/scripts/validation.py | Enhanced validation (Phase 5) |
+| Test Suite | ✅ Complete | /library-system/scripts/test_validation.py | Validation unit tests |
 | Test Cases | 📝 Defined | /library-system/tests/ | Test case spreadsheet |
 
 ### 3.2 System Capabilities
@@ -130,7 +132,9 @@ The system can currently:
 - Simulate return transactions with fine calculation
 - Generate comprehensive operational reports
 - Export data summaries to CSV format
-- Enforce basic policy rules in simulations
+- Enforce policy rules in simulations (item limits, fine thresholds)
+- Validate event scheduling (conflicts, capacity, advance notice, operating hours)
+- Run comprehensive automated tests for all validation functions
 
 ### 3.3 Validation Rules Implemented
 
@@ -141,48 +145,94 @@ The system can currently:
 | Fine calculation ($0.25/day) | ✅ Implemented |
 | Item availability check | ✅ Implemented |
 | Status tracking | ✅ Implemented |
+| Item limit per membership type | ✅ Implemented (Phase 5) |
+| Outstanding fine threshold ($10) | ✅ Implemented (Phase 5) |
+| Event scheduling conflicts | ✅ Implemented (Phase 5) |
+| Room capacity validation | ✅ Implemented (Phase 5) |
+| Advance notice (3 days) | ✅ Implemented (Phase 5) |
+| Operating hours validation | ✅ Implemented (Phase 5) |
 
 ## 4. Next Implementation Phases
 
-### Phase 5: Enhanced Validation (In Progress)
+### Phase 5: Enhanced Validation (Completed)
 
-**Objective**: Add comprehensive rule enforcement. Checkout validations implemented; event validations pending.
+**Objective**: Add comprehensive rule enforcement for both checkout and event operations.
 
-**Tasks & Status**:
+**Completed Tasks**:
 - ✅ Implement item limit checking per membership type
     - Implemented in `library-system/scripts/validation.py` (`MEMBERSHIP_LIMITS`, `validate_item_limit`, `validate_checkout`)
     - Integrated into `library-system/scripts/simulate_day.py` (pre-check before creating a checkout)
 - ✅ Add outstanding fine validation ($10 threshold)
     - Implemented in `library-system/scripts/validation.py` (`FINE_THRESHOLD_DEFAULT`, `sum_outstanding_fines`, `validate_fine_threshold`, `validate_checkout`)
-    - Integrated into `library-system/scripts/simulate_day.py` (uses `fines.csv` and `transactions.csv`)
-- [ ] Create conflict detection for event scheduling
-- [ ] Implement room capacity validation
-- [ ] Add advance notice checking for events (3-day rule)
-- [ ] Validate operating hours for events
+    - Integrated into `library-system/scripts/simulate_day.py` (uses `fines.csv` and `fines.csv`)
+- ✅ Create conflict detection for event scheduling
+    - Implemented in `library-system/scripts/validation.py` (`detect_event_conflicts`)
+    - Detects time overlaps for same room on same date
+- ✅ Implement room capacity validation
+    - Implemented in `library-system/scripts/validation.py` (`validate_room_capacity`)
+    - Ensures expected attendance doesn't exceed room capacity
+- ✅ Add advance notice checking for events (3-day rule)
+    - Implemented in `library-system/scripts/validation.py` (`validate_advance_notice`)
+    - Configurable minimum advance notice (default: 3 days)
+- ✅ Validate operating hours for events
+    - Implemented in `library-system/scripts/validation.py` (`validate_operating_hours`)
+    - Enforces library operating hours per policy (Mon-Thu: 9AM-8PM, Fri-Sat: 9AM-6PM, Sun: 1PM-5PM)
 
-**Deliverables (to date)**:
-- `library-system/scripts/validation.py` — centralized policy checks for checkout eligibility
-- `library-system/scripts/simulate_day.py` — now loads `transactions.csv` and `fines.csv` and calls `validate_checkout(...)` before creating checkouts
+**Deliverables**:
+- `library-system/scripts/validation.py` — comprehensive validation module with:
+  - Checkout validation (item limits, fine thresholds)
+  - Event validation (conflicts, capacity, advance notice, operating hours)
+  - Helper functions for data aggregation
+- `library-system/scripts/simulate_day.py` — integrates checkout validation
+- `library-system/scripts/test_validation.py` — comprehensive test suite with 15 test cases covering all validation functions
 
-**Acceptance Criteria (checkout)**:
-- Checkout is blocked when active loans ≥ membership item limit
-- Checkout is blocked when outstanding fines > $10.00
-- Behavior applies within the same run (pending checkouts counted) and across runs (existing `transactions.csv` considered)
+**Acceptance Criteria**:
 
-**Required Functions**:
+*Checkout Validation:*
+- ✅ Checkout is blocked when active loans ≥ membership item limit
+- ✅ Checkout is blocked when outstanding fines > $10.00
+- ✅ Behavior applies within the same run (pending checkouts counted) and across runs (existing `transactions.csv` considered)
+
+*Event Validation:*
+- ✅ Event scheduling detects time conflicts for same room on same date
+- ✅ Event booking blocked when expected attendance exceeds room capacity
+- ✅ Event booking blocked when scheduled less than 3 days in advance
+- ✅ Event booking blocked when outside library operating hours
+- ✅ All validations work together via `validate_event()` comprehensive function
+
+**Implemented Functions**:
 ```python
+# Checkout validation
 def validate_checkout(member, transactions, fines, membership_limits=None, fine_threshold=10.00):
-        """Validate all checkout prerequisites (Implemented)."""
-        ...
+    """Validate all checkout prerequisites."""
 
+def count_active_loans(transactions, member_id):
+    """Count active loans for a member."""
+
+def sum_outstanding_fines(fines, member_id):
+    """Sum unpaid fines for a member."""
+
+# Event validation
 def detect_event_conflicts(new_event, existing_events):
     """Check for scheduling conflicts."""
-    pass
 
 def validate_room_capacity(event, room):
     """Ensure attendance doesn't exceed capacity."""
-    pass
+
+def validate_advance_notice(event_date, booking_date=None, min_days=3):
+    """Check if event has sufficient advance notice."""
+
+def validate_operating_hours(event_date, start_time, end_time):
+    """Validate event falls within library operating hours."""
+
+def validate_event(event, existing_events, rooms, booking_date=None):
+    """Comprehensive event validation combining all checks."""
 ```
+
+**Testing**:
+- 15 unit tests covering all validation functions
+- All tests passing with 100% success rate
+- Tests cover normal cases, edge cases, and failure scenarios
 
 ### Phase 6: Transaction Management (Planned)
 
@@ -497,18 +547,29 @@ The implementation will be measured by:
 
 ## 11. Timeline Estimate
 
-| Phase | Duration | Dependencies |
-|-------|----------|--------------|
-| Phase 1-4 (Complete) | - | - |
-| Phase 5 (Validation) | 1-2 weeks | None |
-| Phase 6 (Transactions) | 2-3 weeks | Phase 5 |
-| Phase 7 (Reports) | 1-2 weeks | Phase 6 |
-| Phase 8 (Testing) | 2-3 weeks | Phase 6 |
-| Phase 9 (UI) | 3-4 weeks | Phase 8 |
-| Phase 10 (Optimization) | 2-3 weeks | All previous |
+| Phase | Duration | Dependencies | Status |
+|-------|----------|--------------|--------|
+| Phase 1-4 (Foundation, Rules, Scripts, Reports) | - | - | ✅ Complete |
+| Phase 5 (Validation) | 1-2 weeks | None | ✅ Complete |
+| Phase 6 (Transactions) | 2-3 weeks | Phase 5 | 📋 Planned |
+| Phase 7 (Reports) | 1-2 weeks | Phase 6 | 📋 Planned |
+| Phase 8 (Testing) | 2-3 weeks | Phase 6 | 📋 Planned |
+| Phase 9 (UI) | 3-4 weeks | Phase 8 | 📋 Planned |
+| Phase 10 (Optimization) | 2-3 weeks | All previous | 📋 Planned |
 
 **Total Estimated Time**: 11-17 weeks for complete system
+**Completed**: Phases 1-5 (Foundation through Enhanced Validation)
 
 ## 12. Conclusion
 
-The current implementation provides a solid foundation with core data structures, policy definitions, simulation capabilities, and reporting. Future phases will enhance validation, add transaction management, expand reporting, implement comprehensive testing, and potentially add user interfaces.
+The current implementation provides a solid foundation with:
+- Core data structures and CSV-based storage
+- Comprehensive policy definitions
+- Simulation capabilities with validation
+- Operational reporting and analytics
+- **Enhanced validation system (Phase 5 - Completed)**:
+  - Checkout validation (item limits, fine thresholds)
+  - Event validation (conflicts, capacity, advance notice, operating hours)
+  - Comprehensive test suite (15 tests, 100% pass rate)
+
+Future phases will add full transaction management (CRUD operations), expand reporting capabilities, implement comprehensive integration testing, and potentially add user interfaces. The enhanced validation system provides a strong foundation for these future developments.
