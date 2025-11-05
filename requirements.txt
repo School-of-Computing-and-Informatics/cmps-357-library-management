@@ -1,0 +1,8 @@
+# Python requirements for cmps-357-library-management
+# Minimal set for validation scripts and typical CSV/data handling
+
+# Standard library only (no external dependencies required for validation.py)
+# If you add pandas, numpy, or pytest-based tests, uncomment below:
+# pandas>=2.0.0
+# numpy>=1.24.0
+# pytest>=7.0.0
