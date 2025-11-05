@@ -14,6 +14,7 @@ import sys
 import shutil
 import tempfile
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -142,7 +143,7 @@ def test_add_member_default_join_date():
     
     try:
         today = datetime.now().strftime('%Y-%m-%d')
-        one_year = (datetime.now() + timedelta(days=365)).strftime('%Y-%m-%d')
+        one_year = (datetime.now() + relativedelta(months=12)).strftime('%Y-%m-%d')
         
         success, message, member_id = add_member(
             name='Bob Test',
@@ -162,6 +163,7 @@ def test_add_member_default_join_date():
         
         print("✓ test_add_member_default_join_date passed")
     finally:
+        cleanup_test_data_dir(temp_dir)
         cleanup_test_data_dir(temp_dir)
 
 
@@ -294,7 +296,7 @@ def test_renew_membership_expired_member():
         # Verify the expiry date was extended and status changed to active
         members = load_csv_data(temp_dir / 'members.csv')
         member = next(m for m in members if m['member_id'] == '103')
-        assert member['expiry_date'] == '2024-06-09'  # 365 days from 2023-06-10
+        assert member['expiry_date'] == '2024-06-10'  # 12 months from 2023-06-10
         assert member['status'] == 'active'  # Should be updated from 'expired'
         
         print("✓ test_renew_membership_expired_member passed")

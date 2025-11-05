@@ -9,6 +9,7 @@ This module provides CRUD operations for library entities:
 
 import csv
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -127,7 +128,7 @@ def add_member(
             return False, "Invalid join_date format. Use YYYY-MM-DD", None
     
     # Calculate expiry date (12 months from join date)
-    expiry_date_obj = join_date_obj + timedelta(days=365)
+    expiry_date_obj = join_date_obj + relativedelta(months=12)
     expiry_date = expiry_date_obj.strftime('%Y-%m-%d')
     
     # Create new member record
@@ -197,7 +198,7 @@ def renew_membership(
                 return False, f"Invalid expiry_date format in member record: {member['expiry_date']}"
             
             # Extend by 12 months from current expiry date
-            new_expiry_date_obj = expiry_date_obj + timedelta(days=365)
+            new_expiry_date_obj = expiry_date_obj + relativedelta(months=12)
             member['expiry_date'] = new_expiry_date_obj.strftime('%Y-%m-%d')
             
             # Update status to active if it was expired
