@@ -115,7 +115,7 @@ def test_add_member_success():
             data_dir=temp_dir
         )
         
-        assert success == True, f"Expected success but got: {message}"
+        assert success, f"Expected success but got: {message}"
         assert member_id == 104, f"Expected member_id 104 but got {member_id}"
         assert 'successfully' in message.lower()
         
@@ -154,7 +154,7 @@ def test_add_member_default_join_date():
             data_dir=temp_dir
         )
         
-        assert success == True
+        assert success
         
         members = load_csv_data(temp_dir / 'members.csv')
         new_member = members[-1]
@@ -180,7 +180,7 @@ def test_add_member_missing_name():
             data_dir=temp_dir
         )
         
-        assert success == False
+        assert not success
         assert 'name' in message.lower()
         assert member_id is None
         
@@ -203,7 +203,7 @@ def test_add_member_missing_email():
             data_dir=temp_dir
         )
         
-        assert success == False
+        assert not success
         assert 'email' in message.lower()
         assert member_id is None
         
@@ -226,7 +226,7 @@ def test_add_member_invalid_membership_type():
             data_dir=temp_dir
         )
         
-        assert success == False
+        assert not success
         assert 'invalid membership type' in message.lower()
         assert member_id is None
         
@@ -250,7 +250,7 @@ def test_add_member_invalid_date_format():
             data_dir=temp_dir
         )
         
-        assert success == False
+        assert not success
         assert 'invalid' in message.lower() and 'date' in message.lower()
         assert member_id is None
         
@@ -267,7 +267,7 @@ def test_renew_membership_success():
         # Renew member 102
         success, message = renew_membership(102, data_dir=temp_dir)
         
-        assert success == True
+        assert success
         assert 'successfully' in message.lower()
         assert '2025-03-20' in message  # New expiry date (12 months from 2024-03-20)
         
@@ -290,7 +290,7 @@ def test_renew_membership_expired_member():
         # Member 103 is expired
         success, message = renew_membership(103, data_dir=temp_dir)
         
-        assert success == True
+        assert success
         
         # Verify the expiry date was extended and status changed to active
         members = load_csv_data(temp_dir / 'members.csv')
@@ -310,7 +310,7 @@ def test_renew_membership_nonexistent_member():
     try:
         success, message = renew_membership(999, data_dir=temp_dir)
         
-        assert success == False
+        assert not success
         assert 'not found' in message.lower()
         
         print("✓ test_renew_membership_nonexistent_member passed")

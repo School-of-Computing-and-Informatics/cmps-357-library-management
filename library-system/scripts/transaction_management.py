@@ -185,9 +185,10 @@ def renew_membership(
     # Load existing members
     members = load_csv_data(members_file)
     
-    # Find member by ID
+    # Find member by ID and update expiry date
+    new_expiry_date = ""
     member_found = False
-    new_expiry_date = None
+    
     for member in members:
         if int(member['member_id']) == member_id:
             member_found = True
