@@ -15,6 +15,7 @@ Note: Membership type naming inconsistency is handled by providing a default and
 
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple
+from typing import Optional
 
 # Align with policy_definitions.md; include synonyms to resolve naming inconsistency.
 MEMBERSHIP_LIMITS: Dict[str, int] = {
@@ -37,7 +38,9 @@ def count_active_loans(transactions: List[dict], member_id: int) -> int:
     count = 0
     for t in transactions:
         try:
-            if int(t.get("member_id", -1)) == int(member_id) and not t.get("return_date"):
+            t_member_id = t.get("member_id", -1)
+            t_member_id_int: int = int(t_member_id)
+            if t_member_id_int == member_id and not t.get("return_date"):
                 count += 1
         except (TypeError, ValueError):
             # skip malformed entries
@@ -53,7 +56,9 @@ def sum_outstanding_fines(fines: List[dict], member_id: int) -> float:
     total = 0.0
     for f in fines:
         try:
-            if int(f.get("member_id", -1)) != int(member_id):
+            f_member_id = f.get("member_id", -1)
+            f_member_id_int: int = int(f_member_id)
+            if f_member_id_int != member_id:
                 continue
         except (TypeError, ValueError):
             continue
@@ -100,18 +105,21 @@ def validate_checkout(
     """
     errors: List[str] = []
 
-    member_id = member.get("member_id")
-    try:
-        member_id_int = int(member_id)
-    except (TypeError, ValueError):
-        return False, [f"Invalid member_id: {member_id!r}"]
 
-    active_loans = count_active_loans(transactions, member_id_int)
+    member_id_raw = member.get("member_id")
+    if member_id_raw is None:
+        return False, ["member_id is missing"]
+    try:
+        member_id: int = int(member_id_raw)
+    except (TypeError, ValueError):
+        return False, [f"Invalid member_id: {member_id_raw!r}"]
+
+    active_loans = count_active_loans(transactions, member_id)
     ok, msg = validate_item_limit(member, active_loans, membership_limits)
     if not ok:
         errors.append(msg)
 
-    outstanding = sum_outstanding_fines(fines, member_id_int)
+    outstanding = sum_outstanding_fines(fines, member_id)
     ok, msg = validate_fine_threshold(outstanding, fine_threshold)
     if not ok:
         errors.append(msg)
@@ -227,13 +235,13 @@ def validate_room_capacity(event: dict, room: dict) -> Tuple[bool, str]:
     return True, ""
 
 
-def validate_advance_notice(event_date: str, booking_date: str = None, 
+def validate_advance_notice(event_date: str, booking_date: Optional[str] = None, 
                             min_days: int = ADVANCE_NOTICE_DAYS) -> Tuple[bool, str]:
     """Check if event has sufficient advance notice (default 3 days).
     
     Args:
         event_date: Event date in YYYY-MM-DD format
-        booking_date: Booking date in YYYY-MM-DD format (defaults to today)
+        booking_date: Booking date in YYYY-MM-DD format or None (defaults to today)
         min_days: Minimum advance notice required in days
         
     Returns:
@@ -309,7 +317,7 @@ def validate_operating_hours(event_date: str, start_time: str, end_time: str) ->
 
 
 def validate_event(event: dict, existing_events: List[dict], rooms: List[dict], 
-                   booking_date: str = None) -> Tuple[bool, List[str]]:
+                   booking_date: Optional[str] = None) -> Tuple[bool, List[str]]:
     """Validate all event scheduling prerequisites.
     
     Checks:
@@ -322,7 +330,7 @@ def validate_event(event: dict, existing_events: List[dict], rooms: List[dict],
         event: New event to validate
         existing_events: List of existing events to check conflicts against
         rooms: List of available rooms
-        booking_date: Date of booking (defaults to today)
+        booking_date: Date of booking in YYYY-MM-DD format or None (defaults to today)
         
     Returns:
         (ok, errors) - ok is True if all validations pass
