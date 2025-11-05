@@ -234,18 +234,28 @@ def validate_event(event, existing_events, rooms, booking_date=None):
 - All tests passing with 100% success rate
 - Tests cover normal cases, edge cases, and failure scenarios
 
-### Phase 6: Transaction Management (Planned)
+### Phase 6: Transaction Management (In Progress)
 
 **Objective**: Implement full CRUD operations
 
+**Completed Tasks**:
+- ✅ Create add_member() function
+- ✅ Create renew_membership() function
+
 **Planned Tasks**:
-- [ ] Create add_member() function
-- [ ] Create renew_membership() function
 - [ ] Create checkout_item() function
 - [ ] Create return_item() function
 - [ ] Create schedule_event() function
 - [ ] Create cancel_event() function
 - [ ] Implement transaction logging
+
+**Completed Deliverables**:
+- `library-system/scripts/transaction_management.py` — transaction management module with:
+  - `add_member()` — Add new library members with validation
+  - `renew_membership()` — Extend membership expiry dates
+  - Helper functions for CSV operations and member ID generation
+- `library-system/scripts/test_transaction_management.py` — comprehensive test suite with 11 test cases
+- `library-system/scripts/demo_transaction_management.py` — demonstration script showing usage examples
 
 **Expected Deliverables**:
 - Complete transaction API
