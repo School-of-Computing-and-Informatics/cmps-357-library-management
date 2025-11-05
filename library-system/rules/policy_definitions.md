@@ -6,6 +6,12 @@
 - **Standard**: $25/year, up to 5 items at once
 - **Premium**: $50/year, up to 10 items at once, priority event registration
 - **Student**: $15/year, up to 5 items at once (requires valid student ID)
+ - **Child**: $10/year, up to 3 items at once (parental/guardian consent required)
+
+#### Terminology Mapping
+- Application form uses: Adult, Student, Child
+- Policy uses: Standard, Premium, Student
+- Mapping: Adult → Standard (default adult membership); Child is explicitly defined above (3 items)
 
 ### Membership Rules
 - Renewals extend membership by 12 months from expiry date

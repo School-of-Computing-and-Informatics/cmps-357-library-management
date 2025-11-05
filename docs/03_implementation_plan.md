@@ -144,23 +144,36 @@ The system can currently:
 
 ## 4. Next Implementation Phases
 
-### Phase 5: Enhanced Validation (Planned)
+### Phase 5: Enhanced Validation (In Progress)
 
-**Objective**: Add comprehensive rule enforcement
+**Objective**: Add comprehensive rule enforcement. Checkout validations implemented; event validations pending.
 
-**Planned Tasks**:
-- [ ] Implement item limit checking per membership type
-- [ ] Add outstanding fine validation ($10 threshold)
+**Tasks & Status**:
+- ✅ Implement item limit checking per membership type
+    - Implemented in `library-system/scripts/validation.py` (`MEMBERSHIP_LIMITS`, `validate_item_limit`, `validate_checkout`)
+    - Integrated into `library-system/scripts/simulate_day.py` (pre-check before creating a checkout)
+- ✅ Add outstanding fine validation ($10 threshold)
+    - Implemented in `library-system/scripts/validation.py` (`FINE_THRESHOLD_DEFAULT`, `sum_outstanding_fines`, `validate_fine_threshold`, `validate_checkout`)
+    - Integrated into `library-system/scripts/simulate_day.py` (uses `fines.csv` and `transactions.csv`)
 - [ ] Create conflict detection for event scheduling
 - [ ] Implement room capacity validation
 - [ ] Add advance notice checking for events (3-day rule)
 - [ ] Validate operating hours for events
 
+**Deliverables (to date)**:
+- `library-system/scripts/validation.py` — centralized policy checks for checkout eligibility
+- `library-system/scripts/simulate_day.py` — now loads `transactions.csv` and `fines.csv` and calls `validate_checkout(...)` before creating checkouts
+
+**Acceptance Criteria (checkout)**:
+- Checkout is blocked when active loans ≥ membership item limit
+- Checkout is blocked when outstanding fines > $10.00
+- Behavior applies within the same run (pending checkouts counted) and across runs (existing `transactions.csv` considered)
+
 **Required Functions**:
 ```python
-def validate_checkout(member, items_checked_out, outstanding_fines):
-    """Validate all checkout prerequisites."""
-    pass
+def validate_checkout(member, transactions, fines, membership_limits=None, fine_threshold=10.00):
+        """Validate all checkout prerequisites (Implemented)."""
+        ...
 
 def detect_event_conflicts(new_event, existing_events):
     """Check for scheduling conflicts."""
