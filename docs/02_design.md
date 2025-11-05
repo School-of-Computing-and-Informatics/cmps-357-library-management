@@ -296,6 +296,57 @@ For larger scale:
 - Avoid redundant validations
 - Use efficient data structures
 
+### 8.3 Migration Triggers and Database Selection
+
+The current flat CSV approach is intentionally simple and works well within the documented targets. Plan a migration when any of the following conditions are met:
+
+• Volume thresholds (any one):
+  - Members > 2,000–5,000
+  - Items > 10,000–25,000
+  - Rooms > 100
+  - Transactions > 20,000 total or > 500/day sustained
+
+• Concurrency and data integrity needs:
+  - More than 1–5 concurrent writers editing data
+  - Need for foreign keys, unique constraints, and atomic multi-record updates
+  - Frequent merge conflicts or corruption risk with CSV edits
+
+• Performance symptoms:
+  - CSV loads taking > 3 seconds for common operations
+  - Routine reads/joins taking > 1–2 seconds
+
+Database selection guidance:
+  - Step 1 (simple DB): SQLite — single-file, serverless, full SQL, foreign keys, indexes; ideal for a single machine with low write concurrency.
+  - Step 2 (advanced RDBMS): PostgreSQL (recommended) for stronger concurrency, features (JSONB, FTS, materialized views, partitioning) and operational tooling. Alternatives: MySQL/MariaDB, SQL Server Express. Managed options: Azure Database for PostgreSQL, Azure SQL, AWS RDS.
+
+Rule of thumb:
+  - CSV: ≤ 1k members, ≤ 5k items, ≤ 50 rooms, low concurrency
+  - SQLite: tens of thousands of members/items, millions of transactions with few concurrent writers
+  - PostgreSQL/MySQL: beyond that, or when concurrency, reliability, and operations needs dominate
+
+### 8.4 Phased Migration Strategy
+
+Use a two-step approach aligned with the ERDs in `library-system/data/diagrams/`:
+
+1) Migrate to SQLite
+  - Define schema from ERDs (tables, PK/FK, unique constraints, indexes)
+  - Build a CSV → SQLite loader with idempotency and validation
+  - Introduce a small data access layer (DAO) to abstract storage (CSV vs DB)
+  - Enforce constraints (FKs, NOT NULL) and add key indexes (member_id, item_id, event_date+room_id)
+  - Benchmarks: load 5k items < 1s, typical queries < 100–200 ms
+
+2) Upgrade path to PostgreSQL
+  - Generate compatible DDL (types, constraints, indexes)
+  - Swap SQLite connection for PostgreSQL via the DAO without changing business logic
+  - Add operational features as needed (roles, backups, migrations, FTS)
+  - Benchmarks: support > 50 concurrent users; partition/archival plan for growing transactions
+
+Readiness checklist before starting migration:
+  - ERDs finalized and reviewed
+  - CSVs validated (no orphan references, consistent types)
+  - Critical queries identified and indexed
+  - Test suite covers happy paths and key edge cases
+
 ## 9. Security Considerations
 
 ### 9.1 Data Protection

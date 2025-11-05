@@ -256,6 +256,54 @@ def validate_room_capacity(event, room):
 - [ ] Concurrent access handling
 - [ ] Backup and recovery procedures
 
+#### 10.1 Decision Gate: When to Start Migration
+
+Initiate the database migration when one or more of the following is true:
+
+- Data volume exceeds targets by ~2–5× (any): Members > 2k–5k; Items > 10k–25k; Rooms > 100; Transactions > 20k total or > 500/day
+- Concurrency grows beyond a few editors (more than 1–5 concurrent writers) or you need strong constraints and atomic multi-record updates
+- Performance symptoms: CSV loads > 3s; common operations > 1–2s; frequent merge conflicts/corruption risk
+
+See Design §8.3 for detailed triggers and selection guidance.
+
+#### 10.2 Step A — SQLite Migration (Recommended First)
+
+Duration: 1–2 weeks
+
+Tasks:
+- [ ] Define SQLite schema from ERDs (`library-system/data/diagrams/*.mmd`): tables, PK/FK, unique keys
+- [ ] Implement CSV→SQLite loader (idempotent; validates types and referential integrity)
+- [ ] Introduce a DAO layer to abstract storage (CSV vs DB) and refactor scripts to use it
+- [ ] Add indexes for hot queries (member_id, item_id, status, event_date+room_id)
+- [ ] Add simple migrations (DDL scripts, schema version table)
+
+Deliverables:
+- `schema.sql` (DDL), `load_csv_to_sqlite.py`, DAO module, config to toggle storage backend
+- Benchmarks report (load 5k items < 1s; typical lookups < 200 ms)
+
+Risks & Mitigations:
+- Data inconsistency → Pre-load validation and FK constraints
+- Rollback plan → Keep CSV as source of truth; dry-run mode; database snapshot before cutover
+
+#### 10.3 Step B — Advanced RDBMS (PostgreSQL preferred)
+
+Duration: 2–3 weeks (optional, based on growth)
+
+Tasks:
+- [ ] Generate PostgreSQL DDL (types, constraints, indexes)
+- [ ] Swap SQLite connection for PostgreSQL in DAO; keep business logic unchanged
+- [ ] Add roles/permissions, backups, and migration tooling (e.g., Alembic)
+- [ ] Optional: enable JSONB for flexible fields, full-text search for catalog, partition large tables
+
+Deliverables:
+- PostgreSQL DDL, connection config, operational runbook (backup/restore), performance benchmarks under concurrent load
+
+Readiness Checklist:
+- [ ] ERDs finalized and reviewed
+- [ ] CSV quality checks pass (no orphan references)
+- [ ] Critical queries identified and indexed
+- [ ] Automated tests green on both backends (CSV and DB)
+
 ## 5. Implementation Standards
 
 ### 5.1 Coding Standards
