@@ -74,6 +74,7 @@ This file tells GitHub Copilot/Chat how to work in this repository. Keep it in t
 - Do: keep docs consistent with actual files; prefer source-of-truth updates (CHANGELOG, VERSION, READMEs).
 - Do: correct stale references (e.g., remove mentions of missing SVGs).
 - Do: always keep setup_and_test.ps1 in sync with the README Usage section and the actual scripts in library-system/scripts/. Update the script if you add, remove, or reorder scripts, or if the README changes.
+- Do: always follow the documentation in the docs/ directory (specification, workflows, requirements, etc.) when generating or updating code. 
 - Don’t: invent file paths or APIs; verify with a quick scan first.
 - Don’t: add heavy dependencies for simple tasks.
 
