@@ -32,6 +32,11 @@ This file tells GitHub Copilot/Chat how to work in this repository. Keep it in t
   - When adding files, update related READMEs (root and area-specific) and the changelog.
   - Workflows: keep `.mmd` sources in `library-system/workflow/`. Do not reference non-existent SVGs.
   - Tests: `library-system/tests/README.md` documents CSV fixtures; spreadsheets are optional.
+- Python code style
+  - Always place all imports at the very top of each Python file, never inside functions or classes.
+  - If you find imports elsewhere, move them to the top unless there is a documented reason (e.g., conditional/optional imports).
+  - All Python code must pass basic type checking (variable types and function return types) using tools like mypy or Pyright.
+  - Fix any type mismatches, missing annotations, or incorrect return types before submitting code or documentation updates.
 - Transcript logging
   - Append significant actions/findings to `CHAT_TRANSCRIPT.md` with: title/date, branch, request, plan, actions, files changed, notes, quality gates.
 - Quality gates
