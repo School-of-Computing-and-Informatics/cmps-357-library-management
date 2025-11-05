@@ -164,7 +164,6 @@ def test_add_member_default_join_date():
         print("✓ test_add_member_default_join_date passed")
     finally:
         cleanup_test_data_dir(temp_dir)
-        cleanup_test_data_dir(temp_dir)
 
 
 def test_add_member_missing_name():
