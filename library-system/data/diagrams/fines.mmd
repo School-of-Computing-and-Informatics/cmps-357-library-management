@@ -1,0 +1,42 @@
+%% Fines and Violations ERD
+
+erDiagram
+    MEMBER ||--o{ FINE           : "incurs"
+    ITEM   o{--o| FINE           : "may relate to"
+    VIOLATION_TYPE ||--o{ FINE   : "classifies"
+
+    MEMBER {
+        int    member_id PK
+        string name
+        enum   status
+        string membership_type
+        date   join_date
+        date   expiry_date
+    }
+
+    ITEM {
+        int     item_id PK
+        string  title
+        decimal value
+        enum    status
+        enum    type
+    }
+
+    FINE {
+        int     fine_id PK
+        int     member_id FK
+        string  violation_type FK
+        decimal amount
+        date    assessment_date
+        date    paid_date
+        int     item_id FK    // optional reference
+        enum    status
+        string  description
+    }
+
+    VIOLATION_TYPE {
+        string code PK         // OVERDUE, LOST_ITEM, DAMAGED_L1..L4, LATE_EVENT_CXL, etc.
+        string name
+        string policy_source
+        string notes
+    }

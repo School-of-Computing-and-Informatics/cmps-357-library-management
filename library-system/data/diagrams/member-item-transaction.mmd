@@ -1,0 +1,60 @@
+%% Member–Item–Transaction ERD
+
+erDiagram
+    MEMBER ||--o{ TRANSACTION : "checks out"
+    ITEM   ||--o{ TRANSACTION : "is checked out in"
+    MEMBERSHIP_TYPE ||--o{ MEMBER : "defines"
+    MEMBER ||--o{ FINE : "incurs"
+
+    MEMBER {
+        int    member_id PK
+        string name
+        string address
+        string phone
+        string email
+        string membership_type FK
+        date   join_date
+        date   expiry_date
+        enum   status
+    }
+
+    MEMBERSHIP_TYPE {
+        string type_code PK
+        decimal annual_fee
+        int     item_limit
+        string  source
+        string  description
+    }
+
+    ITEM {
+        int    item_id PK
+        string title
+        enum   type       // Book, DVD, Device
+        string author
+        string isbn
+        int    publication_year
+        decimal value
+        enum   status
+        string location
+    }
+
+    TRANSACTION {
+        int    transaction_id PK
+        int    member_id FK
+        int    item_id FK
+        string member_name
+        string title
+        date   checkout_date
+        date   due_date
+        date   return_date
+        string staff_initials
+    }
+
+    FINE {
+        int     fine_id PK
+        int     member_id FK
+        string  violation_type
+        decimal amount
+        date    assessment_date
+        enum    status
+    }

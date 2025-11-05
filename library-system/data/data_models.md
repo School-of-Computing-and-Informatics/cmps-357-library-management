@@ -272,6 +272,17 @@ Event (N) ----< (1) Room
 Room (1) ----< (N) Event
 ```
 
+## ER Diagrams
+
+The detailed ER diagrams for this data model are maintained as Mermaid files in `library-system/data/diagrams/`:
+
+- Overview (all entities and relationships): [diagrams/erd-overview.mmd](diagrams/erd-overview.mmd)
+- Member–Item–Transaction focus: [diagrams/member-item-transaction.mmd](diagrams/member-item-transaction.mmd)
+- Events–Rooms focus: [diagrams/events-rooms.mmd](diagrams/events-rooms.mmd)
+- Fines and Violation Types: [diagrams/fines.mmd](diagrams/fines.mmd)
+
+These can be rendered directly in GitHub or in VS Code with Mermaid preview extensions.
+
 ## Validation Rules Summary
 
 ### Cross-Entity Validation

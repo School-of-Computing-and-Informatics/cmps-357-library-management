@@ -1,0 +1,97 @@
+%% ERD Overview for Library Management System
+%% Mermaid ER diagram
+
+erDiagram
+    MEMBER ||--o{ TRANSACTION : "checks out"
+    ITEM   ||--o{ TRANSACTION : "appears in"
+    MEMBER ||--o{ FINE        : "incurs"
+    ITEM   o{--o| FINE        : "may relate to"
+    ROOM   ||--o{ EVENT       : "hosts"
+    MEMBERSHIP_TYPE ||--o{ MEMBER : "defines"
+    VIOLATION_TYPE  ||--o{ FINE   : "classifies"
+
+    MEMBER {
+        int    member_id PK
+        string name
+        string address
+        string phone
+        string email
+        string membership_type FK
+        date   join_date
+        date   expiry_date
+        enum   status
+    }
+
+    ITEM {
+        int    item_id PK
+        string title
+        enum   type
+        string author
+        string isbn
+        int    publication_year
+        decimal value
+        enum   status
+        string location
+    }
+
+    TRANSACTION {
+        int    transaction_id PK
+        int    member_id FK
+        string member_name
+        int    item_id FK
+        string title
+        date   checkout_date
+        date   due_date
+        date   return_date
+        string staff_initials
+    }
+
+    EVENT {
+        int    event_id PK
+        string event_name
+        date   event_date
+        time   start_time
+        time   end_time
+        string room_id FK
+        string organizer
+        int    expected_attendance
+        text   description
+        string approval_signature
+        enum   status
+    }
+
+    ROOM {
+        string room_id PK
+        string room_name
+        int    capacity
+        int    floor
+        string features
+        enum   availability
+    }
+
+    FINE {
+        int     fine_id PK
+        int     member_id FK
+        string  violation_type FK
+        decimal amount
+        date    assessment_date
+        date    paid_date
+        int     item_id FK
+        enum    status
+        string  description
+    }
+
+    MEMBERSHIP_TYPE {
+        string type_code PK
+        decimal annual_fee
+        int     item_limit
+        string  source
+        string  description
+    }
+
+    VIOLATION_TYPE {
+        string code PK
+        string name
+        string policy_source
+        string notes
+    }

@@ -1,0 +1,27 @@
+%% Events–Rooms ERD
+
+erDiagram
+    ROOM  ||--o{ EVENT : "hosts"
+
+    EVENT {
+        int    event_id PK
+        string event_name
+        date   event_date
+        time   start_time
+        time   end_time
+        string room_id FK
+        string organizer
+        int    expected_attendance
+        text   description
+        string approval_signature
+        enum   status
+    }
+
+    ROOM {
+        string room_id PK
+        string room_name
+        int    capacity
+        int    floor
+        string features
+        enum   availability
+    }
