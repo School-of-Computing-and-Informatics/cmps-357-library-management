@@ -20,6 +20,18 @@ Each process has rules that can be tested for correctness and fairness.
 
 ---
 
+## What’s New in 0.2.0
+
+- Comprehensive documentation suite in the `docs/` directory (specification, design, implementation, testing, workflows, evaluation)
+- Workflow diagrams added as Mermaid sources: `reserve_room.mmd` and `check-out-item.mmd`
+- Data entity documentation: `library-system/data/data_models.md`
+- Additional CSV datasets: `library-system/data/transactions.csv` and `library-system/data/fines.csv`
+- Changelog and version file updated: `docs/CHANGELOG.md`, `VERSION.md`
+
+For full details, see `docs/CHANGELOG.md` and `VERSION.md`.
+
+---
+
 ## Example Functional Units
 
 | Module | Inputs | Outputs | Validation Rules |
@@ -85,8 +97,8 @@ Each rule yields binary outcomes (pass/fail), making this ideal for structured t
 │   │   └─ test_cases.xlsx        # Test case definitions
 │   │
 │   ├─ workflow/                  # Process diagrams
-│   │   ├─ reserve_room.mmd       # Room reservation workflow
-│   │   └─ reserve_room.svg       # Room reservation diagram
+│   │   ├─ reserve_room.mmd       # Room reservation workflow (Mermaid)
+│   │   └─ check-out-item.mmd     # Item checkout workflow (Mermaid)
 │   │
 │   └─ reports/                   # Generated reports (git-ignored)
 │
