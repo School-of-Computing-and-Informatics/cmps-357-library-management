@@ -374,6 +374,54 @@ def test_multiple_add_member_unique_ids():
         cleanup_test_data_dir(temp_dir)
 
 
+def test_add_member_duplicate_email():
+    """Test that adding a member with duplicate email fails."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Try to add a member with the same email as member 101
+        success, message, member_id = add_member(
+            name='New User',
+            address='999 New St',
+            email='john.smith@email.com',  # Same as member 101
+            phone='555-9999',
+            membership_type='Standard',
+            data_dir=temp_dir
+        )
+        
+        assert not success
+        assert 'email already registered' in message.lower()
+        assert member_id is None
+        
+        print("✓ test_add_member_duplicate_email passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_add_member_duplicate_email_case_insensitive():
+    """Test that email uniqueness check is case-insensitive."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Try to add a member with the same email but different case
+        success, message, member_id = add_member(
+            name='New User',
+            address='999 New St',
+            email='JOHN.SMITH@EMAIL.COM',  # Same as member 101 but uppercase
+            phone='555-9999',
+            membership_type='Standard',
+            data_dir=temp_dir
+        )
+        
+        assert not success
+        assert 'email already registered' in message.lower()
+        assert member_id is None
+        
+        print("✓ test_add_member_duplicate_email_case_insensitive passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
 def run_all_tests():
     """Run all tests."""
     print("=" * 60)
@@ -389,6 +437,8 @@ def run_all_tests():
         test_add_member_missing_email,
         test_add_member_invalid_membership_type,
         test_add_member_invalid_date_format,
+        test_add_member_duplicate_email,
+        test_add_member_duplicate_email_case_insensitive,
         test_renew_membership_success,
         test_renew_membership_expired_member,
         test_renew_membership_nonexistent_member,

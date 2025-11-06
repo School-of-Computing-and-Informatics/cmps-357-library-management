@@ -72,10 +72,12 @@ def add_member(
     """
     Add a new member to the library system.
     
+    Validates all required fields and ensures email uniqueness per FR-1.6.
+    
     Args:
         name: Full name of the member
         address: Physical address
-        email: Email address
+        email: Email address (must be unique across all members)
         phone: Contact phone number
         membership_type: Type of membership (Standard, Premium, Student, Adult, Child)
         join_date: Join date in YYYY-MM-DD format (defaults to today)
@@ -113,6 +115,12 @@ def add_member(
     
     # Load existing members
     existing_members = load_csv_data(members_file)
+    
+    # Check for duplicate email
+    email_lower = email.strip().lower()
+    for existing_member in existing_members:
+        if existing_member.get('email', '').strip().lower() == email_lower:
+            return False, "Email already registered", None
     
     # Generate unique member ID
     member_id = generate_member_id(existing_members)

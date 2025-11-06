@@ -102,8 +102,25 @@ def main():
         print(f"✗ Unexpected success")
     print()
     
-    # Demo 4: Try to renew a non-existent member
-    print("Demo 4: Attempting to renew a non-existent member")
+    # Demo 4: Try to add a member with duplicate email
+    print("Demo 4: Attempting to add a member with duplicate email (FR-1.6)")
+    print("-" * 70)
+    success, message, member_id = add_member(
+        name='Jane Smith',
+        address='999 Duplicate St',
+        email='john.smith@email.com',  # Duplicate of member 101
+        phone='555-9999',
+        membership_type='Standard'
+    )
+    
+    if not success:
+        print(f"✓ Email uniqueness validation worked: {message}")
+    else:
+        print(f"✗ Unexpected success")
+    print()
+    
+    # Demo 5: Try to renew a non-existent member
+    print("Demo 5: Attempting to renew a non-existent member")
     print("-" * 70)
     success, message = renew_membership(9999)
     

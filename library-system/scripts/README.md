@@ -64,6 +64,8 @@ python3 demo_transaction_management.py
 ### Member Management
 - **add_member()**: Add new library members
   - Validates all required fields (name, address, email, phone, membership_type)
+  - **Ensures email uniqueness** (per FR-1.6) - prevents duplicate registrations
+  - Email validation is case-insensitive
   - Generates unique member IDs automatically
   - Sets membership expiry to 12 months from join date
   - Initializes status as 'active'
@@ -84,8 +86,8 @@ All validation and transaction management functions have comprehensive unit test
 - Run with: `python3 test_validation.py`
 
 ### Phase 6 Transaction Management
-- 11 test cases covering add_member() and renew_membership()
-- Tests include validation, error handling, and edge cases
+- 13 test cases covering add_member() and renew_membership()
+- Tests include validation, error handling, email uniqueness, and edge cases
 - 100% pass rate
 - Run with: `python3 test_transaction_management.py`
 
