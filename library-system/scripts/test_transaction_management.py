@@ -34,6 +34,9 @@ def setup_test_data_dir():
     temp_dir = Path(tempfile.mkdtemp())
     
     # Create a test members.csv file
+    # Note: Member 102 has future expiry to test non-expired renewal logic
+    future_expiry = (datetime.now() + relativedelta(months=3)).strftime('%Y-%m-%d')
+    
     test_members = [
         {
             'member_id': '101',
@@ -54,7 +57,7 @@ def setup_test_data_dir():
             'phone': '555-0102',
             'membership_type': 'Premium',
             'join_date': '2023-03-20',
-            'expiry_date': '2024-03-20',
+            'expiry_date': future_expiry,  # Future date to test non-expired renewal
             'status': 'active'
         },
         {
@@ -260,21 +263,30 @@ def test_add_member_invalid_date_format():
 
 
 def test_renew_membership_success():
-    """Test successfully renewing a membership."""
+    """Test successfully renewing a non-expired membership (extends from current expiry)."""
     temp_dir = setup_test_data_dir()
     
     try:
+        # Member 102 has future expiry date (not expired)
+        # Per workflow spec: if not expired, extend from current expiry
+        
+        # Get the current expiry date for member 102
+        members_before = load_csv_data(temp_dir / 'members.csv')
+        member_102_before = next(m for m in members_before if m['member_id'] == '102')
+        current_expiry = datetime.strptime(member_102_before['expiry_date'], '%Y-%m-%d').date()
+        expected_new_expiry = (datetime.combine(current_expiry, datetime.min.time()) + relativedelta(months=12)).strftime('%Y-%m-%d')
+        
         # Renew member 102
         success, message = renew_membership(102, data_dir=temp_dir)
         
         assert success
         assert 'successfully' in message.lower()
-        assert '2025-03-20' in message  # New expiry date (12 months from 2024-03-20)
+        assert expected_new_expiry in message
         
-        # Verify the expiry date was updated
+        # Verify the expiry date was extended from current expiry (not from today)
         members = load_csv_data(temp_dir / 'members.csv')
         member = next(m for m in members if m['member_id'] == '102')
-        assert member['expiry_date'] == '2025-03-20'
+        assert member['expiry_date'] == expected_new_expiry
         assert member['status'] == 'active'
         
         print("✓ test_renew_membership_success passed")
@@ -283,19 +295,23 @@ def test_renew_membership_success():
 
 
 def test_renew_membership_expired_member():
-    """Test renewing an expired membership updates status to active."""
+    """Test renewing an expired membership extends from today per workflow spec."""
     temp_dir = setup_test_data_dir()
     
     try:
-        # Member 103 is expired
+        # Member 103 is expired (expiry_date: 2023-06-10)
+        # Per workflow spec: if expired, extend from today (not from old expiry)
         success, message = renew_membership(103, data_dir=temp_dir)
         
         assert success
         
-        # Verify the expiry date was extended and status changed to active
+        # Calculate expected expiry (today + 12 months)
+        expected_expiry = (datetime.now() + relativedelta(months=12)).strftime('%Y-%m-%d')
+        
+        # Verify the expiry date was extended from today and status changed to active
         members = load_csv_data(temp_dir / 'members.csv')
         member = next(m for m in members if m['member_id'] == '103')
-        assert member['expiry_date'] == '2024-06-10'  # 12 months from 2023-06-10
+        assert member['expiry_date'] == expected_expiry  # Should be today + 12 months
         assert member['status'] == 'active'  # Should be updated from 'expired'
         
         print("✓ test_renew_membership_expired_member passed")

@@ -162,7 +162,10 @@ def renew_membership(
     """
     Renew a member's membership by extending expiry date by 12 months.
     
-    Per policy: "Renewals extend membership by 12 months from expiry date"
+    Per workflow specification (05_workflow_stages.md section 2.2):
+    - If NOT expired: extend from current expiry date (current_expiry + 12 months)
+    - If expired: extend from today (today + 12 months)
+    
     Also updates status to 'active' if it was 'expired'.
     
     Args:
@@ -188,6 +191,7 @@ def renew_membership(
     # Find member by ID and update expiry date
     new_expiry_date = ""
     member_found = False
+    today = datetime.now().date()
     
     for member in members:
         if int(member['member_id']) == member_id:
@@ -195,12 +199,19 @@ def renew_membership(
             
             # Parse current expiry date
             try:
-                expiry_date_obj = datetime.strptime(member['expiry_date'], '%Y-%m-%d')
+                expiry_date_obj = datetime.strptime(member['expiry_date'], '%Y-%m-%d').date()
             except ValueError:
                 return False, f"Invalid expiry_date format in member record: {member['expiry_date']}"
             
-            # Extend by 12 months from current expiry date
-            new_expiry_date_obj = expiry_date_obj + relativedelta(months=12)
+            # Calculate new expiry date based on current status
+            # Per workflow spec: if not expired, extend from current expiry; if expired, extend from today
+            if expiry_date_obj >= today:
+                # Not expired: extend from current expiry
+                new_expiry_date_obj = datetime.combine(expiry_date_obj, datetime.min.time()) + relativedelta(months=12)
+            else:
+                # Expired: extend from today
+                new_expiry_date_obj = datetime.combine(today, datetime.min.time()) + relativedelta(months=12)
+            
             new_expiry_date = new_expiry_date_obj.strftime('%Y-%m-%d')
             member['expiry_date'] = new_expiry_date
             
