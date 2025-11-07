@@ -14,7 +14,7 @@ Represents library members and their membership information.
 | name | String | Full name of the member | Membership Application Form | Yes |
 | address | String | Physical address of the member | Membership Application Form | Yes |
 | phone | String | Contact phone number | Membership Application Form | Yes |
-| email | String | Email address | Membership Application Form | Yes |
+| email | String | Email address (must be unique) | Membership Application Form | Yes |
 | membership_type | Enum | Type of membership (Standard, Premium, Student, Adult, Child) | Membership Application Form, Policy Definitions | Yes |
 | join_date | Date | Date when membership started | Membership Application Form (Start Date) | Yes |
 | expiry_date | Date | Date when membership expires | Membership Application Form | Yes |
@@ -32,6 +32,7 @@ Represents library members and their membership information.
 
 ### Notes
 - The `address` field was added based on the Membership Application Form requirement
+- The `email` field must be unique across all members to prevent duplicate registrations and ensure accurate identification
 - Staff Signature from forms is tracked separately in transaction/approval records
 - **Membership Type Clarification**: There is an inconsistency between the Policy Definitions (Standard, Premium, Student) and the Membership Application Form (Adult, Student, Child). The system should support both naming conventions or clarify the mapping (e.g., Standard may equate to Adult).
 

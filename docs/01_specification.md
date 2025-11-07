@@ -30,6 +30,8 @@ The system manages:
 
 **FR-1.5**: The system shall maintain member contact information including name, email, and phone number.
 
+**FR-1.6**: The system shall ensure email addresses are unique across all members to prevent duplicate registrations.
+
 ### 3.2 Resource Circulation
 
 **FR-2.1**: The system shall support three resource types:
@@ -95,7 +97,9 @@ The system manages:
 
 **NFR-1.2**: Member IDs, item IDs, event IDs, and room IDs shall be unique.
 
-**NFR-1.3**: Data shall be stored in CSV format for easy validation.
+**NFR-1.3**: Member email addresses shall be unique to ensure accurate identification and communication.
+
+**NFR-1.4**: Data shall be stored in CSV format for easy validation.
 
 ### 4.2 Testability
 
