@@ -8,16 +8,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Automated testing framework with pytest
-- Complete validation logic for all business rules
-- Item limit checking per membership type
-- Outstanding fine validation
-- Event conflict detection algorithm
-- Room capacity validation
-- Item renewal functionality
 - Overdue items report
+- Monthly statistics summary
 - Command-line interface for interactive operations
 - Performance benchmarking with large datasets
+- Database migration (SQLite/PostgreSQL)
+
+## [0.4.0] - 2025-11-07
+
+### Added - Phase 6: Transaction Management
+
+**Complete CRUD Operations** (`library-system/scripts/transaction_management.py`):
+- `checkout_item()` - Check out items to members with comprehensive validation
+  - Validates member status (must be active)
+  - Enforces item limits per membership type
+  - Checks outstanding fines (<= $10 threshold)
+  - Verifies item availability
+  - Calculates due dates based on item type (Book: 21 days, DVD: 7 days, Device: 14 days)
+  - Updates item status and creates transaction record
+- `return_item()` - Process item returns with fine calculation
+  - Calculates overdue fines ($0.25 per day, capped at $10.00)
+  - Marks items as lost when >30 days overdue
+  - Creates fine records in fines.csv
+  - Updates item status (available or lost)
+  - Updates transaction record with return date
+- `schedule_event()` - Schedule library events with validation
+  - Detects scheduling conflicts (same room, overlapping time)
+  - Validates room capacity vs. expected attendance
+  - Enforces 3-day advance notice requirement
+  - Validates operating hours compliance
+  - Creates event record with status 'pending'
+- `cancel_event()` - Cancel scheduled events with late fee handling
+  - Assesses $25 late cancellation fee when <24 hours notice
+  - Updates event status to 'canceled'
+  - Creates fine record for late cancellations
+  - Frees room reservation
+
+**Helper Functions**:
+- `generate_transaction_id()` - Generate unique transaction IDs
+- `generate_event_id()` - Generate unique event IDs
+- `generate_fine_id()` - Generate unique fine IDs
+- `get_checkout_period()` - Get checkout period by item type
+
+**Comprehensive Test Suite** (`library-system/scripts/test_transaction_management.py`):
+- 27 unit tests covering all transaction management functions
+- 100% test pass rate
+- Tests cover:
+  - Member management operations (13 tests)
+  - Checkout and return operations (8 tests)
+  - Event scheduling and cancellation (6 tests)
+  - Edge cases and error scenarios
+  - Business rule validation
+
+### Changed
+- Updated `transaction_management.py` module header to include all new functions
+- Enhanced test data setup to include all required CSV files (items, transactions, fines, events, rooms)
+- Improved `cancel_event()` to use current datetime for accurate 24-hour calculation
+
+### Documentation Updates
+- Updated `docs/03_implementation_plan.md`:
+  - Marked Phase 6 as complete with full details
+  - Updated system capabilities section
+  - Updated component status table
+  - Updated timeline to show Phase 6 completion
+  - Updated conclusion section
+- Updated `VERSION.md` from 0.3.0 to 0.4.0
+- Updated `CHANGELOG.md` with comprehensive Phase 6 details
+
+### Technical Details
+- All operations persist to CSV files with proper data integrity
+- Transaction logging implemented via CSV records
+- Audit trail maintained through transaction history
+- Full integration with Phase 5 validation functions
+- Type hints and comprehensive docstrings for all functions
+
+## [0.3.0] - 2025-11-06
+
+### Added - Phase 5: Enhanced Validation
+
+**Validation Module** (`library-system/scripts/validation.py`):
+- Item limit checking per membership type
+- Outstanding fine validation ($10 threshold)
+- Event scheduling conflict detection
+- Room capacity validation
+- Advance notice checking for events (3-day rule)
+- Operating hours validation
+
+**Test Suite** (`library-system/scripts/test_validation.py`):
+- 15 comprehensive unit tests
+- 100% test pass rate
+- Coverage of all validation scenarios
+
+### Changed
+- Integrated validation into `simulate_day.py`
+- Updated membership limits to handle naming inconsistencies
 
 ## [0.2.0] - 2025-11-05
 
@@ -144,9 +228,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.1 | 2024-01-01 | Repository setup | Released |
 | 0.1.0 | 2025-11-03 | Core system, data model, scripts | Released |
 | 0.2.0 | 2025-11-05 | Complete documentation suite | Released |
-| 0.3.0 | TBD | Testing framework | Planned |
-| 0.4.0 | TBD | Enhanced validation | Planned |
-| 0.5.0 | TBD | CLI interface | Planned |
+| 0.3.0 | 2025-11-06 | Enhanced validation (Phase 5) | Released |
+| 0.4.0 | 2025-11-07 | Transaction management (Phase 6) | Released |
+| 0.5.0 | TBD | Advanced reporting | Planned |
+| 0.6.0 | TBD | CLI interface | Planned |
 | 1.0.0 | TBD | Full feature set | Planned |
 
 ## Migration Guide

@@ -2,18 +2,16 @@
 """
 Unit tests for transaction_management.py (Phase 6: Transaction Management).
 
-Tests the add_member() and renew_membership() functions including:
-- Valid member addition
-- Field validation
-- Member ID generation
-- Membership renewal
-- Error handling
+Tests all transaction management functions including:
+- add_member() and renew_membership()
+- checkout_item() and return_item()
+- schedule_event() and cancel_event()
 """
 
 import sys
 import shutil
 import tempfile
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
 
@@ -23,7 +21,15 @@ sys.path.insert(0, str(Path(__file__).parent))
 from transaction_management import (
     add_member,
     renew_membership,
+    checkout_item,
+    return_item,
+    schedule_event,
+    cancel_event,
     generate_member_id,
+    generate_transaction_id,
+    generate_event_id,
+    generate_fine_id,
+    get_checkout_period,
     load_csv_data,
     write_csv_data,
 )
@@ -77,6 +83,135 @@ def setup_test_data_dir():
     fieldnames = ['member_id', 'name', 'address', 'email', 'phone', 
                   'membership_type', 'join_date', 'expiry_date', 'status']
     write_csv_data(members_file, test_members, fieldnames)
+    
+    # Create test items.csv file
+    test_items = [
+        {
+            'item_id': '201',
+            'title': 'The Great Gatsby',
+            'type': 'Book',
+            'author': 'F. Scott Fitzgerald',
+            'isbn': '978-0743273565',
+            'publication_year': '1925',
+            'value': '15.99',
+            'status': 'available',
+            'location': 'A-shelf-12'
+        },
+        {
+            'item_id': '202',
+            'title': 'To Kill a Mockingbird',
+            'type': 'Book',
+            'author': 'Harper Lee',
+            'isbn': '978-0061120084',
+            'publication_year': '1960',
+            'value': '14.99',
+            'status': 'checked_out',
+            'location': 'B-shelf-05'
+        },
+        {
+            'item_id': '203',
+            'title': '1984',
+            'type': 'Book',
+            'author': 'George Orwell',
+            'isbn': '978-0451524935',
+            'publication_year': '1949',
+            'value': '13.99',
+            'status': 'available',
+            'location': 'A-shelf-23'
+        },
+        {
+            'item_id': '204',
+            'title': 'The Matrix',
+            'type': 'DVD',
+            'author': 'Wachowski Brothers',
+            'isbn': 'N/A',
+            'publication_year': '1999',
+            'value': '12.99',
+            'status': 'available',
+            'location': 'DVD-rack-03'
+        }
+    ]
+    
+    items_file = temp_dir / 'items.csv'
+    item_fieldnames = ['item_id', 'title', 'type', 'author', 'isbn', 
+                       'publication_year', 'value', 'status', 'location']
+    write_csv_data(items_file, test_items, item_fieldnames)
+    
+    # Create test transactions.csv file
+    test_transactions = [
+        {
+            'transaction_id': '1001',
+            'member_id': '101',
+            'member_name': 'John Smith',
+            'item_id': '202',
+            'title': 'To Kill a Mockingbird',
+            'checkout_date': '2024-01-10',
+            'due_date': '2024-01-31',
+            'return_date': '',
+            'staff_initials': 'AS'
+        }
+    ]
+    
+    transactions_file = temp_dir / 'transactions.csv'
+    transaction_fieldnames = ['transaction_id', 'member_id', 'member_name', 'item_id', 
+                              'title', 'checkout_date', 'due_date', 'return_date', 'staff_initials']
+    write_csv_data(transactions_file, test_transactions, transaction_fieldnames)
+    
+    # Create test fines.csv file
+    test_fines = []
+    
+    fines_file = temp_dir / 'fines.csv'
+    fine_fieldnames = ['fine_id', 'member_id', 'violation_type', 'amount', 
+                       'assessment_date', 'paid_date', 'item_id', 'status', 'description']
+    write_csv_data(fines_file, test_fines, fine_fieldnames)
+    
+    # Create test events.csv file
+    future_date = (datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d')
+    test_events = [
+        {
+            'event_id': '301',
+            'event_name': 'Story Time for Kids',
+            'event_date': future_date,
+            'start_time': '10:00',
+            'end_time': '11:00',
+            'room_id': 'R101',
+            'organizer': "Children's Dept",
+            'expected_attendance': '25',
+            'description': 'Interactive reading session',
+            'approval_signature': 'J.Martinez',
+            'status': 'confirmed'
+        }
+    ]
+    
+    events_file = temp_dir / 'events.csv'
+    event_fieldnames = ['event_id', 'event_name', 'event_date', 'start_time', 'end_time',
+                        'room_id', 'organizer', 'expected_attendance', 'description',
+                        'approval_signature', 'status']
+    write_csv_data(events_file, test_events, event_fieldnames)
+    
+    # Create test rooms.csv file
+    test_rooms = [
+        {
+            'room_id': 'R101',
+            'room_name': 'Community Room A',
+            'capacity': '50',
+            'floor': '1',
+            'features': 'Projector;Whiteboard;Chairs',
+            'availability': 'available'
+        },
+        {
+            'room_id': 'R102',
+            'room_name': 'Meeting Room B',
+            'capacity': '20',
+            'floor': '1',
+            'features': 'TV;Whiteboard',
+            'availability': 'available'
+        }
+    ]
+    
+    rooms_file = temp_dir / 'rooms.csv'
+    room_fieldnames = ['room_id', 'room_name', 'capacity', 'floor', 'features', 'availability']
+    write_csv_data(rooms_file, test_rooms, room_fieldnames)
     
     return temp_dir
 
@@ -422,6 +557,421 @@ def test_add_member_duplicate_email_case_insensitive():
         cleanup_test_data_dir(temp_dir)
 
 
+def test_get_checkout_period():
+    """Test checkout period calculation by item type."""
+    assert get_checkout_period('Book') == 21
+    assert get_checkout_period('DVD') == 7
+    assert get_checkout_period('Device') == 14
+    assert get_checkout_period('Unknown') == 21  # Default
+    
+    print("✓ test_get_checkout_period passed")
+
+
+def test_checkout_item_success():
+    """Test successfully checking out an item."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Member 101 has 1 active checkout, no fines - should succeed
+        success, message, transaction_id = checkout_item(
+            member_id=101,
+            item_id=201,  # Available book
+            checkout_date='2024-11-07',
+            staff_initials='TEST',
+            data_dir=temp_dir
+        )
+        
+        assert success, f"Expected success but got: {message}"
+        assert transaction_id == 1002
+        assert 'successfully' in message.lower()
+        assert 'due date' in message.lower()
+        
+        # Verify transaction was created
+        transactions = load_csv_data(temp_dir / 'transactions.csv')
+        assert len(transactions) == 2
+        new_trans = transactions[-1]
+        assert new_trans['transaction_id'] == '1002'
+        assert new_trans['member_id'] == '101'
+        assert new_trans['item_id'] == '201'
+        assert new_trans['checkout_date'] == '2024-11-07'
+        assert new_trans['due_date'] == '2024-11-28'  # 21 days for Book
+        assert new_trans['return_date'] == ''
+        
+        # Verify item status was updated to checked_out
+        items = load_csv_data(temp_dir / 'items.csv')
+        item = next(i for i in items if i['item_id'] == '201')
+        assert item['status'] == 'checked_out'
+        
+        print("✓ test_checkout_item_success passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_checkout_item_inactive_member():
+    """Test that inactive members cannot checkout items."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Member 103 has expired status
+        success, message, transaction_id = checkout_item(
+            member_id=103,
+            item_id=201,
+            data_dir=temp_dir
+        )
+        
+        assert not success
+        assert 'expired' in message.lower() or 'active' in message.lower()
+        assert transaction_id is None
+        
+        print("✓ test_checkout_item_inactive_member passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_checkout_item_unavailable():
+    """Test that unavailable items cannot be checked out."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Item 202 is already checked_out
+        success, message, transaction_id = checkout_item(
+            member_id=102,
+            item_id=202,
+            data_dir=temp_dir
+        )
+        
+        assert not success
+        assert 'not available' in message.lower()
+        assert transaction_id is None
+        
+        print("✓ test_checkout_item_unavailable passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_return_item_on_time():
+    """Test returning an item on time (no fine)."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Item 202 is checked out with due date 2024-01-31
+        # Return it on time
+        success, message, fine_amount = return_item(
+            item_id=202,
+            return_date='2024-01-30',  # One day early
+            data_dir=temp_dir
+        )
+        
+        assert success
+        assert 'successfully' in message.lower()
+        assert 'no fine' in message.lower()
+        assert fine_amount == 0.0
+        
+        # Verify item status was updated to available
+        items = load_csv_data(temp_dir / 'items.csv')
+        item = next(i for i in items if i['item_id'] == '202')
+        assert item['status'] == 'available'
+        
+        # Verify transaction was updated with return date
+        transactions = load_csv_data(temp_dir / 'transactions.csv')
+        trans = next(t for t in transactions if t['item_id'] == '202')
+        assert trans['return_date'] == '2024-01-30'
+        
+        print("✓ test_return_item_on_time passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_return_item_overdue():
+    """Test returning an item overdue (with fine)."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Item 202 is checked out with due date 2024-01-31
+        # Return it 10 days late
+        success, message, fine_amount = return_item(
+            item_id=202,
+            return_date='2024-02-10',  # 10 days late
+            data_dir=temp_dir
+        )
+        
+        assert success
+        assert 'successfully' in message.lower()
+        assert 'fine assessed' in message.lower()
+        assert fine_amount == 2.50  # 10 days * $0.25
+        
+        # Verify fine record was created
+        fines = load_csv_data(temp_dir / 'fines.csv')
+        assert len(fines) == 1
+        fine = fines[0]
+        assert fine['member_id'] == '101'
+        assert fine['violation_type'] == 'Overdue'
+        assert float(fine['amount']) == 2.50
+        assert fine['status'] == 'outstanding'
+        assert '10 days' in fine['description']
+        
+        print("✓ test_return_item_overdue passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_return_item_max_fine():
+    """Test that fine is capped at $10.00."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Return item 202 very late (50 days)
+        success, message, fine_amount = return_item(
+            item_id=202,
+            return_date='2024-03-21',  # 50 days late
+            data_dir=temp_dir
+        )
+        
+        assert success
+        assert fine_amount == 10.00  # Capped at $10
+        
+        fines = load_csv_data(temp_dir / 'fines.csv')
+        fine = fines[0]
+        assert float(fine['amount']) == 10.00
+        
+        print("✓ test_return_item_max_fine passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_return_item_lost():
+    """Test that items >30 days overdue are marked as lost."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Return item 202 very late (35 days)
+        success, message, fine_amount = return_item(
+            item_id=202,
+            return_date='2024-03-06',  # 35 days late
+            data_dir=temp_dir
+        )
+        
+        assert success
+        assert 'lost' in message.lower()
+        
+        # Verify item status is 'lost'
+        items = load_csv_data(temp_dir / 'items.csv')
+        item = next(i for i in items if i['item_id'] == '202')
+        assert item['status'] == 'lost'
+        
+        print("✓ test_return_item_lost passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_schedule_event_success():
+    """Test successfully scheduling an event."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Schedule event 10 days in the future
+        event_date = (datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d')
+        
+        success, message, event_id = schedule_event(
+            event_name='Book Club Meeting',
+            event_date=event_date,
+            start_time='14:00',
+            end_time='16:00',
+            room_id='R102',
+            organizer='Community Programs',
+            expected_attendance=15,
+            description='Monthly book discussion',
+            data_dir=temp_dir
+        )
+        
+        assert success, f"Expected success but got: {message}"
+        assert event_id == 302
+        assert 'successfully' in message.lower()
+        
+        # Verify event was created
+        events = load_csv_data(temp_dir / 'events.csv')
+        assert len(events) == 2
+        new_event = events[-1]
+        assert new_event['event_id'] == '302'
+        assert new_event['event_name'] == 'Book Club Meeting'
+        assert new_event['status'] == 'pending'
+        
+        print("✓ test_schedule_event_success passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_schedule_event_conflict():
+    """Test that scheduling conflicts are detected."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Try to schedule event at same time as existing event (301)
+        # Event 301 is in R101 from 10:00-11:00
+        events = load_csv_data(temp_dir / 'events.csv')
+        existing_date = events[0]['event_date']
+        
+        success, message, event_id = schedule_event(
+            event_name='Conflicting Event',
+            event_date=existing_date,
+            start_time='10:30',  # Overlaps with 10:00-11:00
+            end_time='11:30',
+            room_id='R101',  # Same room
+            organizer='Test',
+            expected_attendance=10,
+            data_dir=temp_dir
+        )
+        
+        assert not success
+        assert 'conflict' in message.lower()
+        assert event_id is None
+        
+        print("✓ test_schedule_event_conflict passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_schedule_event_capacity_exceeded():
+    """Test that events exceeding room capacity are rejected."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        event_date = (datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d')
+        
+        # R102 has capacity of 20
+        success, message, event_id = schedule_event(
+            event_name='Large Event',
+            event_date=event_date,
+            start_time='14:00',
+            end_time='16:00',
+            room_id='R102',
+            organizer='Test',
+            expected_attendance=25,  # Exceeds capacity
+            data_dir=temp_dir
+        )
+        
+        assert not success
+        assert 'capacity' in message.lower() or 'exceeds' in message.lower()
+        assert event_id is None
+        
+        print("✓ test_schedule_event_capacity_exceeded passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_schedule_event_insufficient_notice():
+    """Test that events require 3 days advance notice."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Try to schedule event only 2 days in advance
+        event_date = (datetime.now() + timedelta(days=2)).strftime('%Y-%m-%d')
+        
+        success, message, event_id = schedule_event(
+            event_name='Last Minute Event',
+            event_date=event_date,
+            start_time='14:00',
+            end_time='16:00',
+            room_id='R102',
+            organizer='Test',
+            expected_attendance=10,
+            data_dir=temp_dir
+        )
+        
+        assert not success
+        assert 'advance notice' in message.lower() or 'days' in message.lower()
+        assert event_id is None
+        
+        print("✓ test_schedule_event_insufficient_notice passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_cancel_event_success():
+    """Test successfully canceling an event with sufficient notice."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Event 301 is 10 days in the future
+        # Cancel it now (more than 24 hours notice)
+        success, message, late_fee = cancel_event(
+            event_id=301,
+            data_dir=temp_dir
+        )
+        
+        assert success
+        assert 'successfully' in message.lower()
+        assert late_fee is None  # No late fee
+        assert 'no late cancellation fee' in message.lower()
+        
+        # Verify event status was updated
+        events = load_csv_data(temp_dir / 'events.csv')
+        event = events[0]
+        assert event['status'] == 'canceled'
+        
+        print("✓ test_cancel_event_success passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
+def test_cancel_event_late_fee():
+    """Test that late cancellations incur a fee."""
+    temp_dir = setup_test_data_dir()
+    
+    try:
+        # Create an event in less than 24 hours from now
+        # Use current time + 12 hours to ensure it's within 24 hours
+        event_datetime = datetime.now() + timedelta(hours=12)
+        event_date = event_datetime.strftime('%Y-%m-%d')
+        event_start_time = event_datetime.strftime('%H:%M')
+        # End time is 2 hours later
+        event_end_datetime = event_datetime + timedelta(hours=2)
+        event_end_time = event_end_datetime.strftime('%H:%M')
+        
+        # First schedule the event
+        events = load_csv_data(temp_dir / 'events.csv')
+        new_event = {
+            'event_id': '302',
+            'event_name': 'Last Minute Event',
+            'event_date': event_date,
+            'start_time': event_start_time,
+            'end_time': event_end_time,
+            'room_id': 'R102',
+            'organizer': 'Test',
+            'expected_attendance': '10',
+            'description': 'Test event',
+            'approval_signature': '',
+            'status': 'confirmed'
+        }
+        events.append(new_event)
+        event_fieldnames = ['event_id', 'event_name', 'event_date', 'start_time', 'end_time',
+                            'room_id', 'organizer', 'expected_attendance', 'description',
+                            'approval_signature', 'status']
+        write_csv_data(temp_dir / 'events.csv', events, event_fieldnames)
+        
+        # Now cancel it (late cancellation - within 24 hours)
+        success, message, late_fee = cancel_event(
+            event_id=302,
+            data_dir=temp_dir
+        )
+        
+        assert success
+        assert late_fee == 25.00, f"Expected late_fee=25.00 but got {late_fee}"
+        assert 'late cancellation fee' in message.lower()
+        assert '$25' in message
+        
+        # Verify fine was created
+        fines = load_csv_data(temp_dir / 'fines.csv')
+        assert len(fines) == 1
+        fine = fines[0]
+        assert fine['violation_type'] == 'Late Event Cancellation'
+        assert float(fine['amount']) == 25.00
+        
+        print("✓ test_cancel_event_late_fee passed")
+    finally:
+        cleanup_test_data_dir(temp_dir)
+
+
 def run_all_tests():
     """Run all tests."""
     print("=" * 60)
@@ -430,6 +980,7 @@ def run_all_tests():
     print()
     
     tests = [
+        # Member management tests
         test_generate_member_id,
         test_add_member_success,
         test_add_member_default_join_date,
@@ -443,6 +994,22 @@ def run_all_tests():
         test_renew_membership_expired_member,
         test_renew_membership_nonexistent_member,
         test_multiple_add_member_unique_ids,
+        # Checkout/Return tests
+        test_get_checkout_period,
+        test_checkout_item_success,
+        test_checkout_item_inactive_member,
+        test_checkout_item_unavailable,
+        test_return_item_on_time,
+        test_return_item_overdue,
+        test_return_item_max_fine,
+        test_return_item_lost,
+        # Event scheduling tests
+        test_schedule_event_success,
+        test_schedule_event_conflict,
+        test_schedule_event_capacity_exceeded,
+        test_schedule_event_insufficient_notice,
+        test_cancel_event_success,
+        test_cancel_event_late_fee,
     ]
     
     passed = 0
