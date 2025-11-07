@@ -20,6 +20,34 @@ Each process has rules that can be tested for correctness and fairness.
 
 ---
 
+## What's New in 0.4.0
+
+- **Phase 6: Transaction Management** - Complete CRUD operations for library entities
+- `checkout_item()` function with comprehensive validation (member status, item limits, outstanding fines)
+- `return_item()` function with automatic fine calculation and assessment
+- `schedule_event()` function with conflict detection and capacity validation
+- `cancel_event()` function with late cancellation fee handling
+- 27 comprehensive unit tests covering all transaction operations (100% pass rate)
+- Full integration with Phase 5 validation rules
+- Transaction logging and audit trail via CSV persistence
+
+For full details, see `docs/CHANGELOG.md` and `VERSION.md`.
+
+---
+
+## What's New in 0.3.0
+
+- **Phase 5: Enhanced Validation** - Comprehensive rule enforcement
+- Item limit checking per membership type
+- Outstanding fine validation ($10 threshold)
+- Event scheduling conflict detection
+- Room capacity validation
+- Advance notice checking (3-day rule)
+- Operating hours validation
+- 15 validation unit tests (100% pass rate)
+
+---
+
 ## What’s New in 0.2.0
 
 - Comprehensive documentation suite in the `docs/` directory (specification, design, implementation, testing, workflows, evaluation)
