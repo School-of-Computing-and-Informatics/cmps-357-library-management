@@ -923,7 +923,10 @@ def test_cancel_event_late_fee():
         # Use current time + 12 hours to ensure it's within 24 hours
         event_datetime = datetime.now() + timedelta(hours=12)
         event_date = event_datetime.strftime('%Y-%m-%d')
-        event_time = event_datetime.strftime('%H:%M')
+        event_start_time = event_datetime.strftime('%H:%M')
+        # End time is 2 hours later
+        event_end_datetime = event_datetime + timedelta(hours=2)
+        event_end_time = event_end_datetime.strftime('%H:%M')
         
         # First schedule the event
         events = load_csv_data(temp_dir / 'events.csv')
@@ -931,8 +934,8 @@ def test_cancel_event_late_fee():
             'event_id': '302',
             'event_name': 'Last Minute Event',
             'event_date': event_date,
-            'start_time': event_time,
-            'end_time': event_time,  # Same time for simplicity
+            'start_time': event_start_time,
+            'end_time': event_end_time,
             'room_id': 'R102',
             'organizer': 'Test',
             'expected_attendance': '10',
